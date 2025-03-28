@@ -1,0 +1,193 @@
+﻿@model IEnumerable<MyWebSite.Models.Product>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid px-0">
+    <!-- Hero Section -->
+    <div class="bg-light py-5 mb-5">
+        <div class="container">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold" style="font-weight: 600;">Sản Phẩm</h1>
+                    <p class="lead text-secondary mb-5">Khám phá bộ sưu tập đặc biệt của chúng tôi</p>
+                    <a asp-area="Admin" asp-controller="Product" asp-action="Add" class="btn btn-dark rounded-pill px-4 py-2">
+                        Thêm Sản Phẩm Mới
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="container mb-5">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary rounded-pill dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            Lọc theo
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                            <li><a class="dropdown-item" href="#">Tất cả sản phẩm</a></li>
+                            <li><a class="dropdown-item" href="#">Giá: Thấp đến cao</a></li>
+                            <li><a class="dropdown-item" href="#">Giá: Cao đến thấp</a></li>
+                            <li><a class="dropdown-item" href="#">Mới nhất</a></li>
+                        </ul>
+                    </div>
+                    <div class="form-outline" style="min-width: 250px;">
+                        <input type="search" id="productSearch" class="form-control rounded-pill" placeholder="Tìm kiếm sản phẩm" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="container">
+        <div class="row g-4">
+            @if (Model.Any())
+            {
+                @foreach (var product in Model)
+                {
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 rounded-4 shadow-sm product-card">
+                            <div class="position-relative">
+                                @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                {
+                                    <div class="product-image-container" style="height: 240px; overflow: hidden;">
+                                        <img src="@product.ImageUrl" class="card-img-top rounded-top-4" alt="@product.Name" style="object-fit: cover; height: 100%; width: 100%;" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="bg-light rounded-top-4 d-flex align-items-center justify-content-center" style="height: 240px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="#d1d1d6" class="bi bi-camera" viewBox="0 0 16 16">
+                                            <path d="M15 12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1.172a3 3 0 0 0 2.12-.879l.83-.828A1 1 0 0 1 6.827 3h2.344a1 1 0 0 1 .707.293l.828.828A3 3 0 0 0 12.828 5H14a1 1 0 0 1 1 1v6zM2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2z" />
+                                            <path d="M8 11a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm0 1a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM3 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z" />
+                                        </svg>
+                                    </div>
+                                }
+                        </div>
+
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between mb-2">
+                                <h5 class="card-title fw-bold">@product.Name</h5>
+                                <h5 class="text-primary fw-bold">@product.Price.ToString("C")</h5>
+                            </div>
+
+                            <p class="card-text text-secondary small mb-3">
+                                @(product.Description != null && product.Description.Length > 80
+                                                            ? product.Description.Substring(0, 80) + "..."
+                                                            : product.Description)
+                            </p>
+
+                        @if (ViewBag.Categories.ContainsKey(product.CategoryId))
+                                {
+                                    <span class="badge bg-light text-dark rounded-pill px-3 py-2 mb-3">@ViewBag.Categories[product.CategoryId]</span>
+                                }
+
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <a asp-action="Display" asp-route-id="@product.Id" class="btn btn-outline-dark rounded-pill px-4">Chi tiết</a>
+                                    <div>
+                                        <a asp-action="Update" asp-route-id="@product.Id" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 38px; height: 38px;">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@product.Id" class="btn btn-sm btn-outline-danger rounded-circle ms-2" style="width: 38px; height: 38px;">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center py-5">
+                    <div style="max-width: 500px; margin: 0 auto;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="#d1d1d6" class="bi bi-box2" viewBox="0 0 16 16">
+                            <path d="M2.95.4a1 1 0 0 1 .8-.4h8.5a1 1 0 0 1 .8.4l2.85 3.8a.5.5 0 0 1 .1.3V15a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V4.5a.5.5 0 0 1 .1-.3L2.95.4ZM7.5 1H3.75L1.5 4h6V1Zm1 0v3h6l-2.25-3H8.5ZM15 5H1v10h14V5Z" />
+                        </svg>
+                        <h3 class="mt-4 mb-3 fw-light">Không có sản phẩm nào</h3>
+                        <p class="text-secondary mb-4">Thêm sản phẩm mới để bắt đầu xây dựng danh mục của bạn</p>
+                        <a asp-action="Add" class="btn btn-dark rounded-pill px-4 py-2">Thêm Sản Phẩm Mới</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Add custom styles for Apple-like appearance -->
+<style>
+    body {
+        font-family: 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    .product-card {
+        transition: all 0.3s ease;
+    }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+        }
+
+    .btn-outline-dark, .btn-dark {
+        font-weight: 500;
+    }
+
+    .rounded-pill {
+        border-radius: 50rem !important;
+    }
+
+    .rounded-4 {
+        border-radius: 20px !important;
+    }
+
+    .rounded-top-4 {
+        border-top-left-radius: 20px !important;
+        border-top-right-radius: 20px !important;
+    }
+
+    .display-4 {
+        font-size: 2.5rem;
+        letter-spacing: -0.02em;
+    }
+
+    input.form-control {
+        background-color: rgba(0, 0, 0, 0.05);
+        border: none;
+        padding: 10px 20px;
+    }
+
+        input.form-control:focus {
+            background-color: rgba(0, 0, 0, 0.07);
+            box-shadow: none;
+        }
+
+    .badge {
+        font-weight: 400;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        // Enable search functionality
+        $(document).ready(function() {
+            $("#productSearch").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $(".product-card").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+}
