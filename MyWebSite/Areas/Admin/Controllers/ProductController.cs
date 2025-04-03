@@ -17,7 +17,6 @@ namespace MyWebSite.Areas.Admin.Controllers
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
         }
-        //  
         public async Task<IActionResult> Index()
         {
             var products = await _productRepository.GetAllAsync();
@@ -31,12 +30,23 @@ namespace MyWebSite.Areas.Admin.Controllers
         {
             var categories = await _categoryRepository.GetAllAsync();
             ViewBag.Categories = new SelectList(categories, "Id", "Name");
+            ViewBag.CategoriesDict = categories.ToDictionary(c => c.Id, c => c.Name);
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(Product product, IFormFile imageUrl, List<IFormFile> imageUrls)
+        public async Task<IActionResult> Add(Product product, IFormFile imageUrl, List<IFormFile> imageUrls, string newCategoryName)
         {
+            if (!string.IsNullOrEmpty(newCategoryName))
+            {
+                // Create and save the new category
+                var newCategory = new Category { Name = newCategoryName };
+                await _categoryRepository.AddAsync(newCategory);
+
+                // Assign the new category ID to the product
+                product.CategoryId = newCategory.Id;
+            }
+
             if (ModelState.IsValid)
             {
                 if (imageUrl != null)
@@ -46,20 +56,16 @@ namespace MyWebSite.Areas.Admin.Controllers
 
                 if (imageUrls != null && imageUrls.Count > 0)
                 {
-
                     var imageUrlList = new List<string>();
                     foreach (var image in imageUrls)
                     {
                         imageUrlList.Add(await SaveImage(image));
                     }
                     product.ImageUrl = imageUrlList.FirstOrDefault();
-
-                    await _productRepository.AddAsync(product);
-                    return RedirectToAction(nameof(Index));
                 }
 
                 await _productRepository.AddAsync(product);
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
 
             var categories = await _categoryRepository.GetAllAsync();

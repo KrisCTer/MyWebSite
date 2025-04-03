@@ -1,9 +1,11 @@
 ﻿@model MyWebSite.Models.Product
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
     ViewData["Title"] = "Add";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <div class="container py-5">
     <div class="row mb-5">
         <div class="col-md-8 mx-auto text-center">
@@ -37,11 +39,25 @@
 
                     <div class="mb-4">
                         <label asp-for="CategoryId" class="form-label" style="font-size: 14px; color: #86868b;">Category</label>
-                        <select asp-for="CategoryId" class="form-select form-select-lg border-0 bg-light" style="height: 56px; border-radius: 12px;" asp-items="ViewBag.Categories">
+                        <select id="categorySelect" asp-for="CategoryId" class="form-select form-select-lg border-0 bg-light" style="height: 56px; border-radius: 12px;" asp-items="ViewBag.Categories">
                             <option value="">-- Select a category --</option>
                         </select>
                         <span asp-validation-for="CategoryId" class="text-danger" style="font-size: 14px;"></span>
                     </div>
+
+                    <div class="mb-4">
+                        <div class="form-check mb-2">
+                            <input type="checkbox" id="addNewCategory" class="form-check-input">
+                            <label class="form-check-label" for="addNewCategory" style="font-size: 14px; color: #86868b;">Add new category</label>
+                        </div>
+                    </div>
+
+                    <div id="newCategoryDiv" style="display:none;" class="mb-4">
+                        <label for="newCategoryName" class="form-label" style="font-size: 14px; color: #86868b;">New Category Name</label>
+                        <input type="text" id="newCategoryName" name="newCategoryName" class="form-control border-0 bg-light" style="height: 56px; border-radius: 12px;" />
+                    </div>
+
+                   
 
                     <div class="mb-4">
                         <label asp-for="ImageUrl" class="form-label" style="font-size: 14px; color: #86868b;">Product Image</label>
@@ -97,3 +113,18 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+<script>
+    document.getElementById('addNewCategory').addEventListener('change', function() {
+        var categorySelect = document.getElementById('categorySelect');
+        var newCategoryDiv = document.getElementById('newCategoryDiv');
+
+        if (this.checked) {
+            categorySelect.disabled = true;
+            newCategoryDiv.style.display = 'block';
+            document.getElementById('CategoryId').value = '';
+        } else {
+            categorySelect.disabled = false;
+            newCategoryDiv.style.display = 'none';
+        }
+    });
+</script>

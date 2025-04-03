@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MyWebSite.Models;
 using MyWebSite.Repositories;
 
 namespace MyWebSite.Controllers
 {
+    [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee + "," + SD.Role_Company)]
     public class ProductController : Controller
     {
         private readonly IProductRepository _productRepository;

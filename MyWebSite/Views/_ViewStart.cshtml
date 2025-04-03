@@ -1,3 +1,7 @@
 ﻿@{
-    Layout = "_Layout";
+    var isAdmin = User.IsInRole("Admin");
+    var adminLayoutPath = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var defaultLayoutPath = "~/Views/Shared/_Layout.cshtml";
+
+    Layout = System.IO.File.Exists(Context.Request.PathBase + adminLayoutPath) ? adminLayoutPath : defaultLayoutPath;
 }

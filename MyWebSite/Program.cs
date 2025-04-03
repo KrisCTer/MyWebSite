@@ -5,6 +5,14 @@ using MyWebSite.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 // Register repositories
 builder.Services.AddScoped<IProductRepository, EFProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, EFCategoryRepository>();
@@ -24,6 +32,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = $"/Identity/Account/Login";
     options.LogoutPath = $"/Identity/Account/Logout";
+    options.AccessDeniedPath = "/";  // Điều hướng về trang chủ thay vì trang AccessDenied
+    options.SlidingExpiration = true;
     options.LogoutPath = $"/Identity/Account/AccessDenied";
 });
 
@@ -40,6 +50,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseSession();
 app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseRouting();
@@ -54,6 +65,9 @@ app.UseEndpoints(endpoints =>
         name: "Admin",
         pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
+    endpoints.MapControllerRoute(
+        name: "User",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
 
     endpoints.MapControllerRoute(
         name: "default",

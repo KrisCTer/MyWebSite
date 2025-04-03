@@ -1,8 +1,95 @@
-﻿@* @{ *@
-@*     ViewData["Title"] = "Home Page"; *@
-@* } *@
-
-@* <div class="text-center"> *@
-@*     <h1 class="display-4">Welcome</h1> *@
-@*     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p> *@
-@* </div> *@
+﻿@model IEnumerable<MyWebSite.Models.Product>
+@{
+	ViewData["Title"] = "Home Page";
+	int numQuantity = 1;
+}
+<header>
+    <nav class="navbar navbar-expand-sm navbar-light border-bottom box-shadow">
+        <div class="container">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                <i class="fas fa-couch me-2"></i>LuxFurniture
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Products" asp-action="Index">Shop</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Categories
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" asp-controller="Products" asp-action="Category" asp-route-id="living-room">Living Room</a></li>
+                            <li><a class="dropdown-item" asp-controller="Products" asp-action="Category" asp-route-id="bedroom">Bedroom</a></li>
+                            <li><a class="dropdown-item" asp-controller="Products" asp-action="Category" asp-route-id="dining">Dining</a></li>
+                            <li><a class="dropdown-item" asp-controller="Products" asp-action="Category" asp-route-id="office">Office</a></li>
+                            <li><a class="dropdown-item" asp-controller="Products" asp-action="Category" asp-route-id="outdoor">Outdoor</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="About">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <partial name="_LoginPartial" />
+                    <a class="nav-link me-3" asp-controller="Home" asp-action="Wishlist">
+                        <i class="fas fa-heart"></i>
+                    </a>
+                    <a class="nav-link" asp-controller="ShoppingCart" asp-action="Index">
+                        <button class="cart-btn">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-count">0</span>
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+@if (ViewData["ShowBanner"] == null || (bool)ViewData["ShowBanner"] == true)
+{
+    <div class="hero-banner" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/banner-bg.jpg');">
+        <div class="hero-content">
+            <h1 class="hero-title">Redefine Your Living Space</h1>
+            <p class="hero-subtitle">Elegance meets functionality with our premium furniture collection</p>
+            <a asp-controller="Products" asp-action="Index" class="btn hero-cta">Shop Now</a>
+        </div>
+    </div>
+}
+<section class="py-2">
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-3 col-sm-6">
+                    <div class="product-card" data-animation-delay="450">
+                        <img src="@item.ImageUrl" class="card-img-top" alt="..." style="height: 300px">
+                        <div class="product-info">
+                            <h3 class="product-title">@Html.DisplayFor(modelItem => item.Name)</h3>
+                            <p class="text-muted">Smarter. Brighter. Mightier.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="product-price">@item.Price.ToString("#,##0") VND</span>
+                                <a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-productId="@item.Id" asp-route-quantity="@numQuantity">
+                                    <button class="btn btn-outline-dark">
+                                        <i class="bi-cart-fill me-1"></i> Add to Cart
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
