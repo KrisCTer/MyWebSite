@@ -37,6 +37,5 @@ namespace MyWebSite.Repositories
             _context.Categories.Update(category);
             await _context.SaveChangesAsync();
         }
-        
     }
 }

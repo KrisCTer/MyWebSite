@@ -24,6 +24,7 @@ namespace MyWebSite.Repositories
 
         public async Task AddAsync(Product product)
         {
+            product.Id = 0;
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
         }

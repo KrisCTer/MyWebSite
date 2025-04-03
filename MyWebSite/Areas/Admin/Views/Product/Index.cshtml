@@ -14,8 +14,17 @@
                 <div class="col-lg-6">
                     <h1 class="display-4 fw-bold" style="font-weight: 600;">Sản Phẩm</h1>
                     <p class="lead text-secondary mb-5">Khám phá bộ sưu tập đặc biệt của chúng tôi</p>
-                    <a asp-area="Admin" asp-controller="Product" asp-action="Add" class="btn btn-dark rounded-pill px-4 py-2">
+                    <a asp-area="Admin" asp-controller="Product" asp-action="Add"
+                       asp-route-id="1" class="btn btn-outline-dark rounded-pill px-4 py-2 ms-3">
                         Thêm Sản Phẩm Mới
+                    </a>
+                    <a asp-area="Admin" asp-controller="Order" asp-action="Index"
+                       asp-route-id="2" class="btn btn-outline-dark rounded-pill px-4 py-2 ms-3">
+                        Quản Lý Đơn Hàng
+                    </a>
+                    <a asp-area="Admin" asp-controller="User" asp-action="Index"
+                       asp-route-id="3" class="btn btn-outline-dark rounded-pill px-4 py-2 ms-3">
+                        Quản Lý Người Dùng
                     </a>
                 </div>
             </div>
@@ -85,9 +94,9 @@
                                                             : product.Description)
                             </p>
 
-                        @if (ViewBag.Categories.ContainsKey(product.CategoryId))
+                        @if (ViewBag.CategoriesDict != null && ViewBag.CategoriesDict.ContainsKey(product.CategoryId))
                                 {
-                                    <span class="badge bg-light text-dark rounded-pill px-3 py-2 mb-3">@ViewBag.Categories[product.CategoryId]</span>
+                                    <span class="badge bg-light text-dark rounded-pill px-3 py-2 mb-3">@ViewBag.CategoriesDict[product.CategoryId]</span>
                                 }
 
                                 <div class="d-flex justify-content-between align-items-center mt-3">
