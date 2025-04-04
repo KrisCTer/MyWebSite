@@ -391,6 +391,9 @@ namespace MyWebSite.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("Discount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
 
