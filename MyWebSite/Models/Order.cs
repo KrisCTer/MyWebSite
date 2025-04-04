@@ -14,8 +14,8 @@ namespace MyWebSite.Models
         public DateTime OrderDate { get; set; } = DateTime.Now;
         public decimal TotalPrice { get; set; }
         public string ShippingAddress { get; set; }
-        public string Status { get; set; }
-
+        public string Status { get; set; } = "Pending"; // e.g., Pending, Shipped, Delivered
+        public Payment? Payment { get; set; }
         public string? Notes { get; set; }
         [ForeignKey("UserId")]
         [ValidateNever]

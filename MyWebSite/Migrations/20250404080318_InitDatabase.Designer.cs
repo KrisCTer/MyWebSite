@@ -12,7 +12,7 @@ using MyWebSite.Models;
 namespace MyWebSite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250402195642_InitDatabase")]
+    [Migration("20250404080318_InitDatabase")]
     partial class InitDatabase
     {
         /// <inheritdoc />
@@ -304,6 +304,9 @@ namespace MyWebSite.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("ProductId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -311,18 +314,49 @@ namespace MyWebSite.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductId1");
 
                     b.ToTable("OrderDetails");
                 });
 
-            modelBuilder.Entity("MyWebSite.Models.Product", b =>
+            modelBuilder.Entity("MyWebSite.Models.Payment", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Method")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("OrderId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<DateTime>("PaidAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.ToTable("Payment");
+                });
+
+            modelBuilder.Entity("MyWebSite.Models.Product", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("CategoryId")
                         .HasColumnType("int");
@@ -349,6 +383,37 @@ namespace MyWebSite.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("MyWebSite.Models.ProductDetail", b =>
+                {
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Material")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Size")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StockCount")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId");
+
+                    b.ToTable("ProductDetail");
+                });
+
             modelBuilder.Entity("MyWebSite.Models.ProductImage", b =>
                 {
                     b.Property<int>("Id")
@@ -360,13 +425,16 @@ namespace MyWebSite.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("ProductId1")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductId1");
 
                     b.ToTable("ProductImages");
                 });
@@ -443,13 +511,24 @@ namespace MyWebSite.Migrations
 
                     b.HasOne("MyWebSite.Models.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ProductId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Order");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("MyWebSite.Models.Payment", b =>
+                {
+                    b.HasOne("MyWebSite.Models.Order", "Order")
+                        .WithOne("Payment")
+                        .HasForeignKey("MyWebSite.Models.Payment", "OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("MyWebSite.Models.Product", b =>
@@ -461,13 +540,22 @@ namespace MyWebSite.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("MyWebSite.Models.ProductDetail", b =>
+                {
+                    b.HasOne("MyWebSite.Models.Product", "Product")
+                        .WithOne("ProductDetail")
+                        .HasForeignKey("MyWebSite.Models.ProductDetail", "ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("MyWebSite.Models.ProductImage", b =>
                 {
                     b.HasOne("MyWebSite.Models.Product", "Product")
                         .WithMany("Images")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductId1");
 
                     b.Navigation("Product");
                 });
@@ -480,11 +568,15 @@ namespace MyWebSite.Migrations
             modelBuilder.Entity("MyWebSite.Models.Order", b =>
                 {
                     b.Navigation("OrderDetails");
+
+                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("MyWebSite.Models.Product", b =>
                 {
                     b.Navigation("Images");
+
+                    b.Navigation("ProductDetail");
                 });
 #pragma warning restore 612, 618
         }

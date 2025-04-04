@@ -6,16 +6,23 @@ namespace MyWebSite.Models
     public class Product
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
+
         [Required, StringLength(100)]
         public string Name { get; set; }
+
         [Range(0.01, 10000.00)]
         public decimal Price { get; set; }
+
         public string Description { get; set; }
+
         public string? ImageUrl { get; set; }
-        public List<ProductImage>? Images { get; set; }
+
+        public HashSet<ProductImage>? Images { get; set; }
+
         public int? CategoryId { get; set; }
         public Category? Category { get; set; }
+
+        public ProductDetail? ProductDetail { get; set; }
     }
 }
