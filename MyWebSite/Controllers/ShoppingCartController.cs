@@ -94,7 +94,7 @@ namespace MyWebSite.Controllers
             await _context.SaveChangesAsync();
             HttpContext.Session.Remove("Cart");
 
-            return View("OrderCompleted", order.Id);
+            return View("OrderCompleted", order.OrderId);
         }
 
     }

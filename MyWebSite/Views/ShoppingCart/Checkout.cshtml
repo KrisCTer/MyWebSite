@@ -1,66 +1,64 @@
 ﻿@model Order
 
-<div class="container mt-4">
-    <div class="row">
-        <!-- Order Form -->
-        <div class="col-md-8">
-            <div class="card" style="border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                <div class="card-header bg-primary text-white" style="border-radius: 12px 12px 0 0;">
-                    <h2 class="mb-0">Checkout Information</h2>
-                </div>
-                <div class="card-body">
-                    <form asp-action="Checkout" method="post">
-                        <div class="form-group mb-3">
-                            <label asp-for="ShippingAddress" class="font-weight-bold">Shipping Address*</label>
-                            <input asp-for="ShippingAddress" class="form-control" required style="border-radius: 8px;" />
-                            <span asp-validation-for="ShippingAddress" class="text-danger"></span>
-                        </div>
+<div class="container py-5">
+    <div class="row g-4">
+        <!-- Checkout Form -->
+        <div class="col-lg-8">
+            <div class="p-4 shadow-sm" style="border-radius: 18px; background-color: #fff;">
+                <h2 class="mb-4" style="font-weight: 600;">Checkout Information</h2>
+                <form asp-action="Checkout" method="post">
+                    <!-- Shipping Address -->
+                    <div class="mb-4">
+                        <label asp-for="ShippingAddress" class="form-label" style="font-weight: 500;">Shipping Address <span class="text-danger">*</span></label>
+                        <input asp-for="ShippingAddress" class="form-control" style="border-radius: 12px;" required />
+                        <span asp-validation-for="ShippingAddress" class="text-danger"></span>
+                    </div>
 
-                        <!-- Order Notes -->
-                        <div class="form-group mb-3">
-                            <label asp-for="Notes" class="font-weight-bold">Order Notes</label>
-                            <textarea asp-for="Notes" class="form-control" rows="3"
-                            placeholder="Special instructions for your order..." style="border-radius: 8px;"></textarea>
-                        </div>
+                    <!-- Notes -->
+                    <div class="mb-4">
+                        <label asp-for="Notes" class="form-label" style="font-weight: 500;">Order Notes</label>
+                        <textarea asp-for="Notes" class="form-control" rows="4" placeholder="Special instructions..." style="border-radius: 12px;"></textarea>
+                    </div>
 
-                        <div class="form-group mt-4">
-                            <button type="submit" class="btn btn-success btn-lg btn-block" style="border-radius: 12px; padding: 12px 20px;">
-                                <i class="fas fa-check-circle"></i> Place Order
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                    <!-- Submit Button -->
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary" style="border-radius: 980px; padding: 12px 28px;">
+                            <i class="bi bi-bag-check-fill me-1"></i> Place Order
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 
         <!-- Order Summary -->
-        <div class="col-md-4">
-            <div class="card" style="border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                <div class="card-header bg-info text-white" style="border-radius: 12px 12px 0 0;">
-                    <h3 class="mb-0">Order Summary</h3>
-                </div>
-                <div class="card-body">
-                    <h5>Items</h5>
-                    <ul class="list-group mb-3" style="border-radius: 8px;">
-                        @* @foreach (var item in Model.Items) *@
+        <div class="col-lg-4">
+            <div class="p-4 shadow-sm" style="border-radius: 18px; background-color: #f5f5f7;">
+                <h3 class="mb-4" style="font-weight: 600;">Order Summary</h3>
+                <div class="mb-3">
+                    <ul class="list-group list-group-flush">
+                        @* Example dynamic items *@
+                        @* foreach (var item in Model.Items) *@
                         @* { *@
-                        @*     <li class="list-group-item d-flex justify-content-between" style="border-radius: 8px;"> *@
-                        @*         <span>@item.Name (x@(item.Quantity))</span> *@
-                        @*         <span>@((item.Price * item.Quantity).ToString("C"))</span> *@
+                        @*     <li class="list-group-item d-flex justify-content-between align-items-center"> *@
+                        @*         <span>@item.Name (x@item.Quantity)</span> *@
+                        @*         <strong>@((item.Price * item.Quantity).ToString("C"))</strong> *@
                         @*     </li> *@
                         @* } *@
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Sample Item (x2)</span>
+                            <strong>$100.00</strong>
+                        </li>
                     </ul>
+                </div>
 
-                    <div class="border-top pt-2">
-                        <div class="d-flex justify-content-between font-weight-bold">
-                            <span>Subtotal:</span>
-                            <span>@Model.TotalPrice.ToString("C")</span>
-                        </div>
-                        <div class="d-flex justify-content-between mt-2">
-                            <span class="font-weight-bold">Total:</span>
-                            <span class="font-weight-bold">@Model.TotalPrice.ToString("C")</span>
-                        </div>
-                    </div>
+                <hr />
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Subtotal:</span>
+                    <span class="fw-semibold">@Model.TotalPrice.ToString("C")</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="fw-bold">Total:</span>
+                    <span class="fw-bold">@Model.TotalPrice.ToString("C")</span>
                 </div>
             </div>
         </div>
@@ -68,16 +66,31 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @@await Html.RenderPartialAsync("_ValidationScriptsPartial")
     <script>
-        $(document).ready(function() {
-            // Disable submit button and show loading spinner
-            $('form').submit(function() {
+        $(function () {
+            $('form').submit(function () {
                 $(this).find('button[type="submit"]').prop('disabled', true)
-                       .html('<i class="fas fa-spinner fa-spin"></i> Processing...');
+                    .html('<i class="bi bi-arrow-repeat me-1 spin"></i> Processing...');
             });
         });
     </script>
+    <style>
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @@keyframes spin {
+            0%
+
+        {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+
+        }
+    </style>
 }

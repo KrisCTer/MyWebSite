@@ -1,0 +1,87 @@
+﻿@{
+    ViewData["Title"] = "Contact";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ModernHome</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" />
+    <style>
+        :root {
+            --primary-light: #f5f5f7;
+            --primary-dark: #1d1d1f;
+            --primary-accent: #967259;
+            --secondary-accent: #D4C8BE;
+            --admin-accent: #3D5A80;
+            --admin-light: #E0FBFC;
+            --admin-mid: #98C1D9;
+            --success: #2a9d8f;
+            --warning: #e9c46a;
+            --danger: #e76f51;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: var(--primary-dark);
+            background-color: #f8f9fa;
+        }
+
+        .contact-form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+            .contact-form .form-control {
+                border-radius: 8px;
+                border: 1px solid #e5e5e7;
+                padding: 10px 15px;
+                height: auto;
+            }
+
+            .contact-form .btn {
+                border-radius: 8px;
+                padding: 8px 16px;
+                font-weight: 500;
+                background-color: var(--admin-accent);
+                color: white;
+                border: none;
+                transition: all 0.2s;
+            }
+
+                .contact-form .btn:hover {
+                    background-color: #2D4A70;
+                }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="contact-form">
+            <h3>Contact Us</h3>
+            <form action="#" method="post">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="Enter your name" required />
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter your email" required />
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">Your Message</label>
+                    <textarea class="form-control" id="message" rows="4" placeholder="Enter your message" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

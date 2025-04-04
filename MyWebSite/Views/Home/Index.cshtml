@@ -1,95 +1,292 @@
-﻿@model IEnumerable<MyWebSite.Models.Product>
-@{
-	ViewData["Title"] = "Home Page";
-	int numQuantity = 1;
+﻿@{
+    ViewData["Title"] = "Home";
+    ViewData["ShowBanner"] = true;
 }
-<header>
-    <nav class="navbar navbar-expand-sm navbar-light border-bottom box-shadow">
-        <div class="container">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                <i class="fas fa-couch me-2"></i>LuxFurniture
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Products" asp-action="Index">Shop</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            Categories
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" asp-controller="Products" asp-action="Category" asp-route-id="living-room">Living Room</a></li>
-                            <li><a class="dropdown-item" asp-controller="Products" asp-action="Category" asp-route-id="bedroom">Bedroom</a></li>
-                            <li><a class="dropdown-item" asp-controller="Products" asp-action="Category" asp-route-id="dining">Dining</a></li>
-                            <li><a class="dropdown-item" asp-controller="Products" asp-action="Category" asp-route-id="office">Office</a></li>
-                            <li><a class="dropdown-item" asp-controller="Products" asp-action="Category" asp-route-id="outdoor">Outdoor</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="About">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a>
-                    </li>
-                </ul>
-                <div class="d-flex align-items-center">
-                    <partial name="_LoginPartial" />
-                    <a class="nav-link me-3" asp-controller="Home" asp-action="Wishlist">
-                        <i class="fas fa-heart"></i>
-                    </a>
-                    <a class="nav-link" asp-controller="ShoppingCart" asp-action="Index">
-                        <button class="cart-btn">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span class="cart-count">0</span>
-                        </button>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
-</header>
-@if (ViewData["ShowBanner"] == null || (bool)ViewData["ShowBanner"] == true)
-{
-    <div class="hero-banner" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/image.jpg');">
-        <div class="hero-content">
-            <h1 class="hero-title">Redefine Your Living Space</h1>
-            <p class="hero-subtitle">Elegance meets functionality with our premium furniture collection</p>
-            <a asp-controller="Products" asp-action="Index" class="btn hero-cta">Shop Now</a>
-        </div>
-    </div>
-}
-<section class="py-2">
-    <div class="container px-4 px-lg-5 mt-5">
-        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-            @foreach (var item in Model)
-            {
-                <div class="col-md-3 col-sm-6">
-                    <div class="product-card" data-animation-delay="450">
-                        <img src="@item.ImageUrl" class="card-img-top" alt="..." style="height: 300px">
-                        <div class="product-info">
-                            <h3 class="product-title">@Html.DisplayFor(modelItem => item.Name)</h3>
-                            <p class="text-muted">Smarter. Brighter. Mightier.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="product-price">@item.Price.ToString("#,##0") VND</span>
-                                <a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-productId="@item.Id" asp-route-quantity="@numQuantity">
-                                    <button class="btn btn-outline-dark">
-                                        <i class="bi-cart-fill me-1"></i> Add to Cart
-                                    </button>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
+<!-- Hero Banner with Animation -->
+<section class="hero-banner">
+    <div class="container">
+        <h1>Elevate Your Living Space</h1>
+        <p>Timeless furniture for modern living.</p>
+        <a asp-controller="Products" asp-action="Index" class="btn btn-primary">Shop Collections</a>
+        <a asp-controller="Home" asp-action="Services" class="btn btn-outline ms-2">Design Services</a>
+        <div>
+            <img src="/api/placeholder/1200/600" alt="Modern Living Room" class="product-image">
         </div>
     </div>
 </section>
+
+<!-- Featured Collections -->
+<section class="collection-section">
+    <div class="container">
+        <div class="collection-heading">
+            <h2>Latest Collections</h2>
+            <p>Discover our newest furniture designs crafted with sustainable materials and timeless aesthetics.</p>
+        </div>
+
+        <div class="row">
+            <!-- Collection 1 -->
+            <div class="col-md-4">
+                <div class="product-card" data-animation-delay="0">
+                    <img src="/api/placeholder/400/300" alt="Scandinavian Collection" class="img-fluid">
+                    <div class="product-info">
+                        <h3 class="product-title">Scandinavian Collection</h3>
+                        <p class="text-muted">Minimalist design with natural materials</p>
+                        <a asp-controller="Products" asp-action="Collection" asp-route-id="scandinavian" class="btn btn-outline mt-3">View Collection</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Collection 2 -->
+            <div class="col-md-4">
+                <div class="product-card" data-animation-delay="150">
+                    <img src="/api/placeholder/400/300" alt="Mid-Century Modern" class="img-fluid">
+                    <div class="product-info">
+                        <h3 class="product-title">Mid-Century Modern</h3>
+                        <p class="text-muted">Iconic designs inspired by the 1950s</p>
+                        <a asp-controller="Products" asp-action="Collection" asp-route-id="mid-century" class="btn btn-outline mt-3">View Collection</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Collection 3 -->
+            <div class="col-md-4">
+                <div class="product-card" data-animation-delay="300">
+                    <img src="/api/placeholder/400/300" alt="Contemporary Luxe" class="img-fluid">
+                    <div class="product-info">
+                        <h3 class="product-title">Contemporary Luxe</h3>
+                        <p class="text-muted">Sophisticated pieces for modern homes</p>
+                        <a asp-controller="Products" asp-action="Collection" asp-route-id="contemporary" class="btn btn-outline mt-3">View Collection</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="product-grid">
+    <div class="container">
+        <div class="collection-heading">
+            <h2>Bestselling Furniture</h2>
+            <p>Our most popular pieces loved by customers across the world.</p>
+        </div>
+
+        <div class="row">
+            <!-- Product 1 -->
+            <div class="col-md-3 col-sm-6">
+                <div class="product-card" data-animation-delay="0">
+                    <img src="/api/placeholder/400/300" alt="Lounge Chair" class="img-fluid">
+                    <div class="product-info">
+                        <h3 class="product-title">Oslo Lounge Chair</h3>
+                        <p class="text-muted">Solid oak with fabric upholstery</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="product-price">$599</span>
+                            <button asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-productId="1" asp-route-quantity="1" class="btn btn-primary btn-sm">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Product 2 -->
+            <div class="col-md-3 col-sm-6">
+                <div class="product-card" data-animation-delay="150">
+                    <img src="/api/placeholder/400/300" alt="Coffee Table" class="img-fluid">
+                    <div class="product-info">
+                        <h3 class="product-title">Marina Coffee Table</h3>
+                        <p class="text-muted">Walnut with tempered glass</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="product-price">$349</span>
+                            <button asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-productId="2" asp-route-quantity="1" class="btn btn-primary btn-sm">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Product 3 -->
+            <div class="col-md-3 col-sm-6">
+                <div class="product-card" data-animation-delay="300">
+                    <img src="/api/placeholder/400/300" alt="Dining Chair" class="img-fluid">
+                    <div class="product-info">
+                        <h3 class="product-title">Lucia Dining Chair</h3>
+                        <p class="text-muted">Set of 2, oak and velvet</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="product-price">$499</span>
+                            <button asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-productId="3" asp-route-quantity="1" class="btn btn-primary btn-sm">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Product 4 -->
+            <div class="col-md-3 col-sm-6">
+                <div class="product-card" data-animation-delay="450">
+                    <img src="/api/placeholder/400/300" alt="Floor Lamp" class="img-fluid">
+                    <div class="product-info">
+                        <h3 class="product-title">Atlas Floor Lamp</h3>
+                        <p class="text-muted">Brass with marble base</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="product-price">$279</span>
+                            <button asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-productId="4" asp-route-quantity="1" class="btn btn-primary btn-sm">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Room Categories -->
+<section class="room-categories">
+    <div class="container">
+        <div class="collection-heading">
+            <h2>Shop by Room</h2>
+            <p>Find furniture perfectly suited for every space in your home.</p>
+        </div>
+
+        <div class="row">
+            <!-- Living Room -->
+            <div class="col-md-4">
+                <a asp-controller="Products" asp-action="Category" asp-route-id="living-room" class="text-decoration-none">
+                    <div class="category-card">
+                        <img src="/api/placeholder/400/300" alt="Living Room">
+                        <div class="category-overlay">
+                            <h3>Living Room</h3>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Bedroom -->
+            <div class="col-md-4">
+                <a asp-controller="Products" asp-action="Category" asp-route-id="bedroom" class="text-decoration-none">
+                    <div class="category-card">
+                        <img src="/api/placeholder/400/300" alt="Bedroom">
+                        <div class="category-overlay">
+                            <h3>Bedroom</h3>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Dining Room -->
+            <div class="col-md-4">
+                <a asp-controller="Products" asp-action="Category" asp-route-id="dining" class="text-decoration-none">
+                    <div class="category-card">
+                        <img src="/api/placeholder/400/300" alt="Dining Room">
+                        <div class="category-overlay">
+                            <h3>Dining Room</h3>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Home Office -->
+            <div class="col-md-4">
+                <a asp-controller="Products" asp-action="Category" asp-route-id="office" class="text-decoration-none">
+                    <div class="category-card">
+                        <img src="/api/placeholder/400/300" alt="Home Office">
+                        <div class="category-overlay">
+                            <h3>Home Office</h3>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Outdoor -->
+            <div class="col-md-4">
+                <a asp-controller="Products" asp-action="Category" asp-route-id="outdoor" class="text-decoration-none">
+                    <div class="category-card">
+                        <img src="/api/placeholder/400/300" alt="Outdoor">
+                        <div class="category-overlay">
+                            <h3>Outdoor</h3>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Accessories -->
+            <div class="col-md-4">
+                <a asp-controller="Products" asp-action="Category" asp-route-id="accessories" class="text-decoration-none">
+                    <div class="category-card">
+                        <img src="/api/placeholder/400/300" alt="Accessories">
+                        <div class="category-overlay">
+                            <h3>Accessories</h3>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="testimonial-section">
+    <div class="container">
+        <div class="collection-heading">
+            <h2>What Our Customers Say</h2>
+            <p>Read reviews from homeowners who have transformed their spaces with our furniture.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-quote">
+                        "The quality of ModernHome's furniture is exceptional. Our new sofa is both beautiful and comfortable - exactly what we were looking for."
+                    </div>
+                    <div class="testimonial-author">
+                        — Sarah L.
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-quote">
+                        "From browsing to delivery, the experience was seamless. The dining set we purchased has received so many compliments from our guests."
+                    </div>
+                    <div class="testimonial-author">
+                        — Michael T.
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-quote">
+                        "The design consultation service helped me create a cohesive look throughout my apartment. Couldn't be happier with the results!"
+                    </div>
+                    <div class="testimonial-author">
+                        — Emma R.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="cta-section">
+    <div class="container">
+        <h2>Transform Your Space Today</h2>
+        <p>Join thousands of satisfied customers who have elevated their homes with our designer furniture collections.</p>
+        <a asp-controller="Shop" asp-action="Index" class="btn btn-light btn-lg">Shop All Collections</a>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Animation for products when scrolling
+        document.addEventListener('DOMContentLoaded', function () {
+            const productCards = document.querySelectorAll('.product-card');
+
+            // Add visible class to product cards with delay
+            function animateProductCards() {
+                productCards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    const isVisible = (rect.top <= window.innerHeight * 0.8);
+
+                    if (isVisible) {
+                        const delay = card.getAttribute('data-animation-delay');
+                        setTimeout(() => {
+                            card.classList.add('visible');
+                        }, delay);
+                    }
+                });
+            }
+
+            // Initial check
+            animateProductCards();
+
+            // Check on scroll
+            window.addEventListener('scroll', animateProductCards);
+        });
+    </script>
+}

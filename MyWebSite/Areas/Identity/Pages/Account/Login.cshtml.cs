@@ -123,7 +123,7 @@ namespace MyWebSite.Areas.Identity.Pages.Account
 
                     if (isAdmin)
                     {
-                        return LocalRedirect("~/Admin/Product/Index"); // ✅ Nếu là Admin, vào trang Admin
+                        return LocalRedirect("~/Admin/DashBoard"); // ✅ Nếu là Admin, vào trang Admin
                     }
                     else
                     {

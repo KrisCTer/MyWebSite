@@ -47,8 +47,8 @@ namespace MyWebSite.Areas.Admin.Controllers
                 product.CategoryId = newCategory.Id;
             }
 
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 if (imageUrl != null)
                 {
                     product.ImageUrl = await SaveImage(imageUrl);
@@ -66,7 +66,7 @@ namespace MyWebSite.Areas.Admin.Controllers
 
                 await _productRepository.AddAsync(product);
                 return RedirectToAction(nameof(Index));
-            }
+            //}
 
             var categories = await _categoryRepository.GetAllAsync();
             ViewBag.Categories = new SelectList(categories, "Id", "Name");
