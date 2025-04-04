@@ -12,7 +12,10 @@ namespace MyWebSite.Controllers
         {
             _productRepository = productRepository;
         }
-
+        public async Task<IActionResult> Contact()
+        {
+            return View();
+        }
         public async Task<IActionResult> Index()
         {
             var products = await _productRepository.GetAllAsync();

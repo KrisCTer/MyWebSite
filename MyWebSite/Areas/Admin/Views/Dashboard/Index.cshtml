@@ -1,0 +1,220 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using System.Linq
+@{
+    ViewData["Title"] = "DashBoard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="fw-bold mb-3">Dashboard Overview</h2>
+            <p class="text-muted">Welcome to the ModernHome admin panel. Here's your business at a glance.</p>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6 col-lg-3">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-icon bg-primary">
+                        <i class="bi bi-cart3"></i>
+                    </div>
+                    <h5 class="card-title">Total Orders</h5>
+                </div>
+                <h3 class="card-value">@Model.TotalOrders</h3>
+                <p class="card-label">
+                    <i class="bi bi-arrow-up-right text-success"></i>
+                    <span class="text-success">@Model.OrdersGrowth%</span> from last month
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-icon bg-success">
+                        <i class="bi bi-currency-dollar"></i>
+                    </div>
+                    <h5 class="card-title">Revenue</h5>
+                </div>
+                <h3 class="card-value">$@Model.TotalRevenue.ToString("N0")</h3>
+                <p class="card-label">
+                    <i class="bi bi-arrow-up-right text-success"></i>
+                    <span class="text-success">@Model.RevenueGrowth%</span> from last month
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-icon bg-warning">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <h5 class="card-title">Customers</h5>
+                </div>
+                <h3 class="card-value">@Model.TotalCustomers</h3>
+                <p class="card-label">
+                    <i class="bi bi-arrow-up-right text-success"></i>
+                    <span class="text-success">@Model.CustomersGrowth%</span> new customers
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <div class="card-icon bg-danger">
+                        <i class="bi bi-grid"></i>
+                    </div>
+                    <h5 class="card-title">Products</h5>
+                </div>
+                <h3 class="card-value">@Model.TotalProducts</h3>
+                <p class="card-label">
+                    <span class="text-muted">@Model.LowStockProducts items low in stock</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Orders -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="dashboard-card">
+                <div class="card-header mb-3">
+                    <h5 class="card-title">Recent Orders</h5>
+                    <a href="#" class="btn btn-sm btn-primary">View All</a>
+                </div>
+                <div class="table-responsive admin-table">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model.RecentOrders)
+                            {
+                                <tr>
+                                    <td>#@order.OrderId</td>
+                                    <td>@order.CustomerName</td>
+                                    <td>@order.OrderDate.ToString("MMM dd, yyyy")</td>
+                                    <td>$@order.Amount.ToString("N2")</td>
+                                    <td>
+                                        @{
+                                            string statusClass = order.Status switch
+                                            {
+                                                "Completed" => "status-completed",
+                                                "Pending" => "status-pending",
+                                                "Cancelled" => "status-cancelled",
+                                                _ => "status-pending"
+                                            };
+                                        }
+                                        <span class="status-badge @statusClass">@order.Status</span>
+                                    </td>
+                                    <td>
+                                        <button class="action-btn"><i class="bi bi-eye"></i></button>
+                                        <button class="action-btn"><i class="bi bi-pencil"></i></button>
+                                        <button class="action-btn delete"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Top Products -->
+        <div class="col-md-6">
+            <div class="dashboard-card">
+                <div class="card-header mb-3">
+                    <h5 class="card-title">Top Products</h5>
+                    <a href="#" class="btn btn-sm btn-primary">View All</a>
+                </div>
+                <div class="table-responsive admin-table">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Sales</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var product in Model.TopProducts)
+                            {
+                                <tr>
+                                    <td>@product.Name</td>
+                                    <td>$@product.Price.ToString("N2")</td>
+                                    <td>@product.SalesCount</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activities -->
+        <div class="col-md-6">
+            <div class="dashboard-card">
+                <div class="card-header mb-3">
+                    <h5 class="card-title">Recent Activities</h5>
+                </div>
+                <div class="activity-feed">
+                    @foreach (var activity in Model.RecentActivities)
+                    {
+                        <div class="d-flex mb-3">
+                            <div class="flex-shrink-0">
+                                @{
+                                    string iconClass = activity.Type switch
+                                    {
+                                        "order" => "bi-cart-check text-success",
+                                        "product" => "bi-box text-primary",
+                                        "customer" => "bi-person text-warning",
+                                        "review" => "bi-star text-danger",
+                                        _ => "bi-bell text-muted"
+                                    };
+                                }
+                                <div class="activity-icon">
+                                    <i class="bi @iconClass"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <p class="mb-1">@activity.Description</p>
+                                <small class="text-muted">@activity.Timestamp.ToString("MMM dd, yyyy HH:mm")</small>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Example script for refreshing dashboard data
+        function refreshDashboardData() {
+            fetch('/api/dashboard/stats')
+                .then(response => response.json())
+                .then(data => {
+                    // Update dashboard metrics with fresh data
+                    console.log('Dashboard data refreshed');
+                })
+                .catch(error => console.error('Error refreshing dashboard data:', error));
+        }
+
+        // Refresh dashboard data every 5 minutes
+        setInterval(refreshDashboardData, 300000);
+    </script>
+}

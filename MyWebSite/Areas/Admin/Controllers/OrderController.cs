@@ -43,7 +43,7 @@ namespace MyWebSite.Areas.Admin.Controllers
                 .Include(o => o.ApplicationUser) // Navigation property
                 .Include(o => o.OrderDetails)
                 .ThenInclude(oi => oi.Product)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.OrderId == id);
 
 
             if (order == null)
@@ -84,7 +84,7 @@ namespace MyWebSite.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Order order)
         {
-            if (id != order.Id)
+            if (id != order.OrderId)
             {
                 return NotFound();
             }
@@ -107,7 +107,7 @@ namespace MyWebSite.Areas.Admin.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OrderExists(order.Id))
+                    if (!OrderExists(order.OrderId))
                     {
                         return NotFound();
                     }
@@ -144,7 +144,7 @@ namespace MyWebSite.Areas.Admin.Controllers
                 .Include(o => o.ApplicationUser)
                 .Include(o => o.OrderDetails)
                     .ThenInclude(oi => oi.Product)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.OrderId == id);
 
 
             if (order == null)
@@ -186,7 +186,7 @@ namespace MyWebSite.Areas.Admin.Controllers
 
         private bool OrderExists(int id)
         {
-            return _context.Orders.Any(e => e.Id == id);
+            return _context.Orders.Any(e => e.OrderId == id);
         }
     }
 }
