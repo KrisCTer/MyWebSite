@@ -104,7 +104,7 @@ namespace MyWebSite.Areas.Admin.Controllers
             return View(product);
         }
         [HttpPost]
-        public async Task<IActionResult> Update(int id, Product product)
+        public async Task<IActionResult> Update(Guid id, Product product)
         {
             if (id != product.Id)
             {
