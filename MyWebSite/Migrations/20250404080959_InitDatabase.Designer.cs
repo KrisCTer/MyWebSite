@@ -12,7 +12,7 @@ using MyWebSite.Models;
 namespace MyWebSite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250404080318_InitDatabase")]
+    [Migration("20250404080959_InitDatabase")]
     partial class InitDatabase
     {
         /// <inheritdoc />
@@ -393,6 +393,9 @@ namespace MyWebSite.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Discount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");

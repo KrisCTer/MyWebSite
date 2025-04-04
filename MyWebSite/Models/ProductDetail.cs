@@ -14,6 +14,7 @@ namespace MyWebSite.Models
         public int StockCount { get; set; }
         public decimal Price { get; set; }
         public string? Description { get; set; }
+        public decimal Discount { get; set; } = 0.0m;
         public bool IsAvailable { get; set; }
         public Product Product { get; set; } = null!;
 
