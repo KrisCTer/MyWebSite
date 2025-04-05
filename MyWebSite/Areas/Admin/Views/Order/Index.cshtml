@@ -35,7 +35,7 @@
                     @foreach (var item in Model)
                     {
                         <tr style="border-bottom: 1px solid #e8e8ed;">
-                            <td style="padding: 12px; color: #1d1d1f;">#@item.OrderId.ToString("D6")</td>
+                            <td style="padding: 12px; color: #1d1d1f;">@item.OrderId.ToString("D6")</td>
                             <td style="padding: 12px; color: #1d1d1f;">@item.ApplicationUser?.UserName</td>
                             <td style="padding: 12px; color: #1d1d1f;">@item.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
                             <td style="padding: 12px; color: #1d1d1f;">@item.TotalPrice.ToString("N0") ₫</td>
