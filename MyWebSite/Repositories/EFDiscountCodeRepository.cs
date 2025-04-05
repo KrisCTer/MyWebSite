@@ -1,4 +1,5 @@
-﻿using MyWebSite.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using MyWebSite.Models;
 
 namespace MyWebSite.Repositories
 {
