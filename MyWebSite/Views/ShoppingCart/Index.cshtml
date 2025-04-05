@@ -28,9 +28,11 @@
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <img src="/images/products/@(item.ProductId).jpg" 
-                                                     onerror="this.src='/images/placeholder.jpg'"
-                                                     class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;" />
+                                                <img src="~/images/products/@(item.ProductId).jpg"
+                                                     asp-append-version="true"
+                                                     onerror="this.src='/images/jokedans.jpg'"
+                                                     class="rounded me-3"
+                                                     style="width: 60px; height: 60px; object-fit: cover;" />
                                                 <div>
                                                     <h6 class="mb-0">@item.Name</h6>
                                                 </div>

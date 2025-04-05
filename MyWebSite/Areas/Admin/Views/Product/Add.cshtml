@@ -5,126 +5,157 @@
     ViewData["Title"] = "Add";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
-<div class="container py-5">
-    <div class="row mb-5">
-        <div class="col-md-8 mx-auto text-center">
-            <h2 class="fw-light mb-4" style="font-size: 32px; letter-spacing: -0.5px;">Add Product</h2>
+<div class="container-fluid">
+    <!-- Page Title with Action Buttons -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Add New Product</h2>
+        <div>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
         </div>
     </div>
-    <div class="row justify-content-center">
-        <div class="col-md-7">
-            <form asp-action="Add" method="post" enctype="multipart/form-data">
-                <div class="bg-white rounded-4 shadow-sm p-5 mb-4">
-                    <div class="mb-4">
-                        <label asp-for="Name" class="form-label" style="font-size: 14px; color: #86868b;">Product Name</label>
-                        <input asp-for="Name" class="form-control form-control-lg border-0 bg-light" style="height: 56px; border-radius: 12px;" />
-                        <span asp-validation-for="Name" class="text-danger" style="font-size: 14px;"></span>
+
+    <!-- Product Form Card -->
+    <div class="dashboard-card">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="row">
+                <!-- Basic Information -->
+                <div class="col-md-6">
+                    <h5 class="mb-3">Basic Information</h5>
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">Product Name</label>
+                        <input asp-for="Name" class="form-control" placeholder="Enter product name" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
 
-                    <div class="mb-4">
-                        <label asp-for="Price" class="form-label" style="font-size: 14px; color: #86868b;">Price</label>
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Description</label>
+                        <textarea asp-for="Description" class="form-control" rows="5" placeholder="Detailed product description"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Price" class="form-label">Price ($)</label>
+                            <input asp-for="Price" class="form-control" type="number" step="0.01" min="0.01" placeholder="0.00" />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="CategoryId" class="form-label">Category</label>
+                            <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories">
+                                <option value="">-- Select Category --</option>
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inventory & Media -->
+                <div class="col-md-6">
+                    <h5 class="mb-3">Inventory & Media</h5>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="StockQuantity" class="form-label">Stock Quantity</label>
+                            <input asp-for="StockQuantity" class="form-control" type="number" min="0" placeholder="0" />
+                            <span asp-validation-for="StockQuantity" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="LowStockThreshold" class="form-label">Low Stock Alert</label>
+                            <input asp-for="LowStockThreshold" class="form-control" type="number" min="1" placeholder="5" />
+                            <span asp-validation-for="LowStockThreshold" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Primary Image</label>
                         <div class="input-group">
-                            <span class="input-group-text border-0 bg-light" style="border-top-left-radius: 12px; border-bottom-left-radius: 12px;">$</span>
-                            <input asp-for="Price" class="form-control form-control-lg border-0 bg-light" style="height: 56px; border-top-right-radius: 12px; border-bottom-right-radius: 12px;" />
+                            <input name="PrimaryImage" type="file" class="form-control" accept="image/*" />
                         </div>
-                        <span asp-validation-for="Price" class="text-danger" style="font-size: 14px;"></span>
+                        <small class="text-muted">Main product image (max 2MB)</small>
                     </div>
 
-                    <div class="mb-4">
-                        <label asp-for="Description" class="form-label" style="font-size: 14px; color: #86868b;">Description</label>
-                        <textarea asp-for="Description" class="form-control border-0 bg-light" style="border-radius: 12px; min-height: 150px;"></textarea>
-                        <span asp-validation-for="Description" class="text-danger" style="font-size: 14px;"></span>
-                    </div>
-
-                    <div class="mb-4">
-                        <label asp-for="CategoryId" class="form-label" style="font-size: 14px; color: #86868b;">Category</label>
-                        <select id="categorySelect" asp-for="CategoryId" class="form-select form-select-lg border-0 bg-light" style="height: 56px; border-radius: 12px;" asp-items="ViewBag.Categories">
-                            <option value="">-- Select a category --</option>
-                        </select>
-                        <span asp-validation-for="CategoryId" class="text-danger" style="font-size: 14px;"></span>
-                    </div>
-
-                    <div class="mb-4">
-                        <div class="form-check mb-2">
-                            <input type="checkbox" id="addNewCategory" class="form-check-input">
-                            <label class="form-check-label" for="addNewCategory" style="font-size: 14px; color: #86868b;">Add new category</label>
+                    <div class="mb-3">
+                        <label class="form-label">Additional Images</label>
+                        <div class="input-group">
+                            <input name="AdditionalImages" type="file" multiple class="form-control" accept="image/*" />
                         </div>
+                        <small class="text-muted">Up to 5 additional product images</small>
                     </div>
-
-                    <div id="newCategoryDiv" style="display:none;" class="mb-4">
-                        <label for="newCategoryName" class="form-label" style="font-size: 14px; color: #86868b;">New Category Name</label>
-                        <input type="text" id="newCategoryName" name="newCategoryName" class="form-control border-0 bg-light" style="height: 56px; border-radius: 12px;" />
-                    </div>
-
-                   
-
-                    <div class="mb-4">
-                        <label asp-for="ImageUrl" class="form-label" style="font-size: 14px; color: #86868b;">Product Image</label>
-                        <div class="position-relative">
-                            <button type="button" class="btn w-100 text-center py-3" style="background-color: #F5F5F7; color: #0066CC; border-radius: 12px; border: none;">
-                                Choose File
-                            </button>
-                            <input type="file" asp-for="ImageUrl" accept="image/*" class="position-absolute top-0 start-0 opacity-0 w-100 h-100" style="cursor: pointer;" />
-                        </div>
-                        <p class="text-secondary mt-2 mb-0" style="font-size: 14px;">Recommended image size: 800×600 pixels</p>
-                    </div>
-                </div>
-
-                <div class="d-grid gap-3">
-                    <button type="submit" class="btn btn-lg py-3 text-white fw-normal" style="background-color: #0066CC; border-radius: 12px; border: none;">
-                        Add Product
-                    </button>
-                    <a asp-action="Index" class="btn btn-lg py-3 fw-normal text-decoration-none" style="background-color: #F5F5F7; color: #1d1d1f; border-radius: 12px; border: none;">
-                        Back to Products
-                    </a>
-                </div>
-            </form>
-
-            <div class="bg-white rounded-4 shadow-sm p-4 mt-4">
-                <h3 class="fw-light mb-3" style="font-size: 20px; letter-spacing: -0.5px;">Tips for Adding Products</h3>
-
-                <div class="d-flex align-items-center mb-3">
-                    <div class="rounded-circle flex-shrink-0 me-3" style="background-color: #F5F5F7; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
-                        <i class="bi bi-image" style="color: #0066CC;"></i>
-                    </div>
-                    <p class="mb-0" style="color: #1d1d1f;">Use high-quality images with clear backgrounds</p>
-                </div>
-
-                <div class="d-flex align-items-center mb-3">
-                    <div class="rounded-circle flex-shrink-0 me-3" style="background-color: #F5F5F7; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
-                        <i class="bi bi-text-paragraph" style="color: #0066CC;"></i>
-                    </div>
-                    <p class="mb-0" style="color: #1d1d1f;">Write detailed descriptions for better searchability</p>
-                </div>
-
-                <div class="d-flex align-items-center">
-                    <div class="rounded-circle flex-shrink-0 me-3" style="background-color: #F5F5F7; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
-                        <i class="bi bi-tag" style="color: #0066CC;"></i>
-                    </div>
-                    <p class="mb-0" style="color: #1d1d1f;">Choose the appropriate category for your product</p>
                 </div>
             </div>
-        </div>
+
+            <!-- Product Details Section -->
+            <h5 class="mt-4 mb-3">Product Details</h5>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Color</label>
+                    <input name="ProductDetail.Color" class="form-control" placeholder="e.g. Black, Oak, etc." />
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Material</label>
+                    <input name="ProductDetail.Material" class="form-control" placeholder="e.g. Wood, Metal, etc." />
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Dimensions</label>
+                    <input name="ProductDetail.Dimensions" class="form-control" placeholder="e.g. 50x70x100 cm" />
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Warranty</label>
+                    <input name="ProductDetail.Warranty" class="form-control" placeholder="e.g. 1 Year Limited" />
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Discount (%)</label>
+                    <input name="ProductDetail.Discount" type="number" min="0" max="100" class="form-control" placeholder="0" />
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Available</label>
+                    <div class="form-check form-switch mt-2">
+                        <input name="ProductDetail.IsAvailable" class="form-check-input" type="checkbox" checked />
+                        <label class="form-check-label">Available for purchase</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Buttons -->
+            <div class="d-flex justify-content-end mt-4">
+                <button type="reset" class="btn btn-secondary me-2">
+                    <i class="bi bi-arrow-counterclockwise"></i> Reset
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Create Product
+                </button>
+            </div>
+        </form>
     </div>
 </div>
+
 @section Scripts {
+    <script>
+        // Preview images when selected
+        document.addEventListener('DOMContentLoaded', function() {
+            const primaryImageInput = document.querySelector('input[name="PrimaryImage"]');
+            const additionalImagesInput = document.querySelector('input[name="AdditionalImages"]');
+
+            // Simple validation for file size
+            primaryImageInput.addEventListener('change', function() {
+                if (this.files[0] && this.files[0].size > 2 * 1024 * 1024) {
+                    alert('Primary image must be less than 2MB');
+                    this.value = '';
+                }
+            });
+
+            // Additional client-side validation can be added here
+        });
+    </script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-<script>
-    document.getElementById('addNewCategory').addEventListener('change', function() {
-        var categorySelect = document.getElementById('categorySelect');
-        var newCategoryDiv = document.getElementById('newCategoryDiv');
-
-        if (this.checked) {
-            categorySelect.disabled = true;
-            newCategoryDiv.style.display = 'block';
-            document.getElementById('CategoryId').value = '';
-        } else {
-            categorySelect.disabled = false;
-            newCategoryDiv.style.display = 'none';
-        }
-    });
-</script>
