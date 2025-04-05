@@ -91,6 +91,25 @@ namespace MyWebSite.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "discountCodes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DiscountPercentage = table.Column<int>(type: "int", nullable: false),
+                    MaxUsage = table.Column<int>(type: "int", nullable: false),
+                    UsageCount = table.Column<int>(type: "int", nullable: false),
+                    ValidFrom = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ValidTo = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_discountCodes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -477,6 +496,9 @@ namespace MyWebSite.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "discountCodes");
 
             migrationBuilder.DropTable(
                 name: "OrderDetails");

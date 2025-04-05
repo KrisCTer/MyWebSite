@@ -1,39 +1,22 @@
 ﻿@model int
+@{
+    ViewData["Title"] = "Order Completed";
+}
 
-<div class="container mt-5 mb-5">
-    <div class="card shadow-sm" style="border-radius: 18px;">
-        <div class="card-header text-white text-center"
-             style="background: linear-gradient(90deg, #4CAF50, #66BB6A); border-radius: 18px 18px 0 0;">
-            <h2 class="mb-0" style="font-weight: 600; font-size: 28px;">Order Confirmed</h2>
-        </div>
-        <div class="card-body p-5 text-center">
-            <p class="fs-5" style="font-weight: 500;">
-                Thank you for your purchase!
-            </p>
-            <p class="fs-6">
-                Your order <strong class="text-success">#@Model</strong> has been successfully processed.
-            </p>
+<div class="container py-5 text-center">
+    <div class="mb-4">
+        <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+    </div>
+    <h1 class="mb-3">Thank You for Your Order!</h1>
+    <p class="mb-4">Your order has been placed successfully. Order ID: #@Model</p>
+    <p class="mb-5">We've sent a confirmation to your email address. You can track your order status in your account.</p>
 
-            <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
-                <a asp-controller="Home" asp-action="Index"
-                   class="btn btn-primary px-4 py-2"
-                   style="border-radius: 980px; font-weight: 500;">
-                    <i class="bi bi-house-door-fill me-1"></i> Back to Home
-                </a>
-                <a asp-action="OrderHistory"
-                   class="btn btn-outline-success px-4 py-2"
-                   style="border-radius: 980px; font-weight: 500;">
-                    <i class="bi bi-box-seam me-1"></i> View Order History
-                </a>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="d-grid gap-3">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Continue Shopping</a>
+                <a asp-controller="Order" asp-action="Details" asp-route-id="@Model" class="btn btn-outline">View Order Details</a>
             </div>
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        $(document).ready(function () {
-            // Future custom behaviors here
-        });
-    </script>
-}

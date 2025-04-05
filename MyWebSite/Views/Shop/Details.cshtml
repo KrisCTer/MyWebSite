@@ -1,0 +1,468 @@
+﻿@using ModernHome
+@model MyWebSite.Models.Product
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<!-- Product Detail Section -->
+<div class="container mt-5">
+    <div class="row">
+        <!-- Product Images -->
+        <div class="col-md-6 mb-4">
+            <div class="position-relative">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded">
+                }
+                else if (Model.Images != null && Model.Images.Any())
+                {
+                    <img src="@Model.Images.First().Url" alt="@Model.Name" class="img-fluid rounded">
+                }
+                else
+                {
+                    <img src="/images/placeholder.jpg" alt="@Model.Name" class="img-fluid rounded">
+                }
+
+                @if (Model.ProductDetail != null && Model.ProductDetail.Discount > 0)
+                {
+                    <div class="position-absolute top-0 start-0 bg-danger text-white px-2 py-1 m-2 rounded-pill">
+                        -@(Model.ProductDetail.Discount)%
+                    </div>
+                }
+            </div>
+
+            @if (Model.Images != null && Model.Images.Count > 1)
+            {
+                <div class="row mt-3">
+                    @foreach (var image in Model.Images.Take(4))
+                    {
+                        <div class="col-3 mb-3">
+                            <img src="@image.Url" alt="@Model.Name thumbnail" class="img-fluid rounded cursor-pointer">
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <!-- Product Information -->
+        <div class="col-md-6">
+            <div class="mb-3">
+                @if (Model.Category != null)
+                {
+                    <a asp-controller="Products" asp-action="Category" asp-route-id="@Model.Category.Id" class="text-decoration-none text-muted">@Model.Category.Name</a>
+                }
+            </div>
+
+            <h1 class="mb-3">@Model.Name</h1>
+
+            <div class="d-flex align-items-center mb-3">
+                <div class="text-warning me-2">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-half"></i>
+                </div>
+                <span>4.5 (24 reviews)</span>
+            </div>
+
+            <div class="product-price mb-4">
+                @if (Model.ProductDetail != null && Model.ProductDetail.Discount > 0)
+                {
+                    <span class="text-decoration-line-through text-muted me-2">$@Model.Price.ToString("F2")</span>
+                    <span class="text-danger fs-3 fw-bold">$@((Model.Price * (1 - Model.ProductDetail.Discount / 100m)).ToString("F2"))</span>
+                }
+                else
+                {
+                    <span class="fs-3 fw-bold">$@Model.Price.ToString("F2")</span>
+                }
+            </div>
+
+            <div class="mb-4">
+                <p>@Model.Description</p>
+            </div>
+
+            @if (Model.ProductDetail != null)
+            {
+                <div class="mb-4">
+                    <h5>Details</h5>
+                    <ul class="list-unstyled">
+                        @if (!string.IsNullOrEmpty(Model.ProductDetail.Dimensions))
+                        {
+                            <li><strong>Dimensions:</strong> @Model.ProductDetail.Dimensions</li>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.ProductDetail.Material))
+                        {
+                            <li><strong>Material:</strong> @Model.ProductDetail.Material</li>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.ProductDetail.Color))
+                        {
+                            <li><strong>Color:</strong> @Model.ProductDetail.Color</li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            <div class="mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <h5 class="mb-0 me-3">Quantity</h5>
+                    <div class="input-group" style="width: 130px;">
+                        <button class="btn btn-outline-secondary" type="button" id="decrease-quantity">-</button>
+                        <input type="text" class="form-control text-center" id="product-quantity" value="1">
+                        <button class="btn btn-outline-secondary" type="button" id="increase-quantity">+</button>
+                    </div>
+                </div>
+
+                <div class="d-flex availability align-items-center mb-3">
+                    @if (Model.ProductDetail != null && Model.ProductDetail.IsAvailable)
+                    {
+                        <span class="badge bg-success me-2">In Stock</span>
+                        <span>Usually ships within 2-3 business days</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary me-2">Out of Stock</span>
+                        <span>This item is currently unavailable</span>
+                    }
+                </div>
+
+                <div class="d-flex">
+                    <button class="btn btn-primary me-2" id="add-to-cart" data-id="@Model.Id">
+                        <i class="bi bi-bag-plus me-2"></i>Add to Cart
+                    </button>
+                    <button class="btn btn-outline me-2" id="wishlist-btn">
+                        <i class="bi bi-heart"></i>
+                    </button>
+                    <button class="btn btn-outline" id="share-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Share this product">
+                        <i class="bi bi-share"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Tabs -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <ul class="nav nav-tabs" id="productTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab" aria-controls="description" aria-selected="true">Description</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="specifications-tab" data-bs-toggle="tab" data-bs-target="#specifications" type="button" role="tab" aria-controls="specifications" aria-selected="false">Specifications</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">Reviews</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping" type="button" role="tab" aria-controls="shipping" aria-selected="false">Shipping & Returns</button>
+                </li>
+            </ul>
+            <div class="tab-content p-4 border border-top-0 rounded-bottom" id="productTabContent">
+                <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h4>Product Description</h4>
+                            <p>@Model.Description</p>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Sed euismod, nisl vel ultricies lacinia, nisl nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl. Sed euismod, nisl vel ultricies lacinia, nisl nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl.</p>
+                        </div>
+                        <div class="col-md-4">
+                            <img src="@(Model.Images != null && Model.Images.Any() ? Model.Images.First().Url : "/images/placeholder.jpg")" alt="@Model.Name" class="img-fluid rounded">
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="specifications" role="tabpanel" aria-labelledby="specifications-tab">
+                    <h4>Technical Specifications</h4>
+                    <table class="table table-striped">
+                        <tbody>
+                            @if (Model.ProductDetail != null)
+                            {
+                                <tr>
+                                    <th>Dimensions</th>
+                                    <td>@(string.IsNullOrEmpty(Model.ProductDetail.Dimensions) ? "N/A" : Model.ProductDetail.Dimensions)</td>
+                                </tr>
+                                <tr>
+                                    <th>Material</th>
+                                    <td>@(string.IsNullOrEmpty(Model.ProductDetail.Material) ? "N/A" : Model.ProductDetail.Material)</td>
+                                </tr>
+                                <tr>
+                                    <th>Color</th>
+                                    <td>@(string.IsNullOrEmpty(Model.ProductDetail.Color) ? "N/A" : Model.ProductDetail.Color)</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="2">Specifications not available</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                    <h4>Customer Reviews</h4>
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="text-warning me-2">
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-half"></i>
+                            </div>
+                            <span>4.5 out of 5</span>
+                        </div>
+                        <p>Based on 24 reviews</p>
+                    </div>
+
+                    <!-- Sample Reviews -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <div>
+                                    <h5 class="card-title mb-0">Sarah M.</h5>
+                                    <div class="text-warning">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                    </div>
+                                </div>
+                                <small class="text-muted">2 months ago</small>
+                            </div>
+                            <p class="card-text">Absolutely love this piece! The quality is exceptional and it fits perfectly in my living room. Would definitely recommend!</p>
+                        </div>
+                    </div>
+
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <div>
+                                    <h5 class="card-title mb-0">Michael T.</h5>
+                                    <div class="text-warning">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star"></i>
+                                    </div>
+                                </div>
+                                <small class="text-muted">3 weeks ago</small>
+                            </div>
+                            <p class="card-text">Great product but delivery took longer than expected. The quality makes up for it though!</p>
+                        </div>
+                    </div>
+
+                    <!-- Write a Review Form -->
+                    <div class="mt-4">
+                        <h5>Write a Review</h5>
+                        <form>
+                            <div class="mb-3">
+                                <label for="review-rating" class="form-label">Rating</label>
+                                <div class="rating-stars">
+                                    <i class="bi bi-star" data-value="1"></i>
+                                    <i class="bi bi-star" data-value="2"></i>
+                                    <i class="bi bi-star" data-value="3"></i>
+                                    <i class="bi bi-star" data-value="4"></i>
+                                    <i class="bi bi-star" data-value="5"></i>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="review-title" class="form-label">Title</label>
+                                <input type="text" class="form-control" id="review-title" placeholder="Summarize your review">
+                            </div>
+                            <div class="mb-3">
+                                <label for="review-text" class="form-label">Review</label>
+                                <textarea class="form-control" id="review-text" rows="3" placeholder="Tell others about your experience with this product"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit Review</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="shipping" role="tabpanel" aria-labelledby="shipping-tab">
+                    <h4>Shipping Information</h4>
+                    <p>We ship to all 50 states and select international destinations. Standard shipping typically takes 3-5 business days.</p>
+
+                    <h5 class="mt-4">Shipping Options</h5>
+                    <ul>
+                        <li><strong>Standard Shipping:</strong> 3-5 business days - $9.95</li>
+                        <li><strong>Express Shipping:</strong> 2-3 business days - $19.95</li>
+                        <li><strong>Next Day Delivery:</strong> Next business day - $29.95</li>
+                        <li><strong>Free Shipping:</strong> On orders over $75 (continental US only)</li>
+                    </ul>
+
+                    <h5 class="mt-4">Return Policy</h5>
+                    <p>We accept returns within 30 days of delivery for a full refund. Items must be unused and in original packaging.</p>
+                    <p>For damaged or defective items, please contact our customer service team within 7 days of receiving your order.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    @if (ViewData["RelatedProducts"] != null)
+    {
+        <div class="mt-5">
+            <h3 class="mb-4">You May Also Like</h3>
+            <div class="row">
+                @foreach (var relatedProduct in (List<MyWebSite.Models.Product>)ViewData["RelatedProducts"])
+                {
+                    <div class="col-md-3 mb-4">
+                        <div class="product-card">
+                            <div class="position-relative">
+                                <a asp-action="Details" asp-route-id="@relatedProduct.Id">
+                                    @if (!string.IsNullOrEmpty(relatedProduct.ImageUrl))
+                                    {
+                                        <img src="@relatedProduct.ImageUrl" alt="@relatedProduct.Name" class="img-fluid">
+                                    }
+                                    else if (relatedProduct.Images != null && relatedProduct.Images.Any())
+                                    {
+                                        <img src="@relatedProduct.Images.First().Url" alt="@relatedProduct.Name" class="img-fluid">
+                                    }
+                                    else
+                                    {
+                                        <img src="/images/placeholder.jpg" alt="@relatedProduct.Name" class="img-fluid">
+                                    }
+                                </a>
+                                @if (relatedProduct.ProductDetail != null && relatedProduct.ProductDetail.Discount > 0)
+                                {
+                                    <div class="position-absolute top-0 start-0 bg-danger text-white px-2 py-1 m-2 rounded-pill">
+                                        -@(relatedProduct.ProductDetail.Discount)%
+                                    </div>
+                                }
+                            </div>
+                            <div class="product-info">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    @if (relatedProduct.Category != null)
+                                    {
+                                        <small class="text-muted">@relatedProduct.Category.Name</small>
+                                    }
+                                    @if (relatedProduct.ProductDetail != null && relatedProduct.ProductDetail.IsAvailable)
+                                    {
+                                        <span class="badge bg-success">In Stock</span>
+                                    }
+                                    else if (relatedProduct.ProductDetail != null && !relatedProduct.ProductDetail.IsAvailable)
+                                    {
+                                        <span class="badge bg-secondary">Out of Stock</span>
+                                    }
+                                </div>
+                                <h5 class="product-title">
+                                    <a asp-action="Details" asp-route-id="@relatedProduct.Id" class="text-decoration-none text-dark">@relatedProduct.Name</a>
+                                </h5>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="product-price">
+                                        @if (relatedProduct.ProductDetail != null && relatedProduct.ProductDetail.Discount > 0)
+                                        {
+                                            <span class="text-decoration-line-through text-muted me-2">$@relatedProduct.Price.ToString("F2")</span>
+                                            <span class="text-danger">$@((relatedProduct.Price * (1 - relatedProduct.ProductDetail.Discount / 100m)).ToString("F2"))</span>
+                                        }
+                                        else
+                                        {
+                                            <span>$@relatedProduct.Price.ToString("F2")</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Quantity controls
+        document.getElementById('increase-quantity').addEventListener('click', function() {
+            var input = document.getElementById('product-quantity');
+            input.value = parseInt(input.value) + 1;
+        });
+
+        document.getElementById('decrease-quantity').addEventListener('click', function() {
+            var input = document.getElementById('product-quantity');
+            if (parseInt(input.value) > 1) {
+                input.value = parseInt(input.value) - 1;
+            }
+        });
+
+        // Add to cart
+        document.getElementById('add-to-cart').addEventListener('click', function() {
+            const productId = this.getAttribute('data-id');
+            const quantity = document.getElementById('product-quantity').value;
+
+            // Add animation
+            this.innerHTML = '<i class="bi bi-check me-2"></i>Added';
+            this.classList.replace('btn-primary', 'btn-success');
+
+            // Reset after 2 seconds
+            setTimeout(() => {
+                this.innerHTML = '<i class="bi bi-bag-plus me-2"></i>Add to Cart';
+                this.classList.replace('btn-success', 'btn-primary');
+
+                // Show toast notification
+                const toast = document.createElement('div');
+                toast.className = 'position-fixed bottom-0 end-0 p-3';
+                toast.style.zIndex = '11';
+                toast.innerHTML = `
+                    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header">
+                            <strong class="me-auto">ModernHome</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">
+                            Product added to your cart!
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(toast);
+
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 3000);
+            }, 1000);
+        });
+
+        // Wishlist functionality
+        document.getElementById('wishlist-btn').addEventListener('click', function() {
+            if (this.querySelector('i').classList.contains('bi-heart')) {
+                this.querySelector('i').classList.replace('bi-heart', 'bi-heart-fill');
+                this.querySelector('i').classList.add('text-danger');
+            } else {
+                this.querySelector('i').classList.replace('bi-heart-fill', 'bi-heart');
+                this.querySelector('i').classList.remove('text-danger');
+            }
+        });
+
+        // Rating stars
+        document.querySelectorAll('.rating-stars i').forEach(star => {
+            star.addEventListener('mouseover', function() {
+                const value = this.getAttribute('data-value');
+
+                document.querySelectorAll('.rating-stars i').forEach(s => {
+                    if (s.getAttribute('data-value') <= value) {
+                        s.classList.remove('bi-star');
+                        s.classList.add('bi-star-fill');
+                    } else {
+                        s.classList.remove('bi-star-fill');
+                        s.classList.add('bi-star');
+                    }
+                });
+            });
+
+            star.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                console.log('Selected rating:', value);
+                // Here you would typically set a hidden input value
+            });
+        });
+
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+    </script>
+}
