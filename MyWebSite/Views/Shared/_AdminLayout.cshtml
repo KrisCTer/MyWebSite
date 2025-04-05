@@ -458,12 +458,11 @@
         </div>
         <div class="admin-menu">
             <div class="menu-heading">Dashboard</div>
-            <a href="#" class="menu-item active">
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="menu-item  @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
-
             <div class="menu-heading">Product Management</div>
-            <a href="#" class="menu-item">
+            <a asp-area="Admin" asp-controller="Product" asp-action="Index" class="menu-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Product" ? "active" : "")">
                 <i class="bi bi-grid"></i> Products
             </a>
             <a href="#" class="menu-item">
@@ -530,13 +529,6 @@
                 <div class="header-title">Dashboard</div>
             </div>
             <div class="header-actions">
-                <button class="header-icon">
-                    <i class="bi bi-search"></i>
-                </button>
-                <button class="header-icon">
-                    <i class="bi bi-bell"></i>
-                    <span class="notification-badge">3</span>
-                </button>
                     <div class="auth-links me-3">
                         @if (User.Identity.IsAuthenticated)
                         {

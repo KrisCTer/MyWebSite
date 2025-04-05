@@ -96,6 +96,5 @@ namespace MyWebSite.Controllers
 
             return View("OrderCompleted", order.OrderId);
         }
-
     }
 }

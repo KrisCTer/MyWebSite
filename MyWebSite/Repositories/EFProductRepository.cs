@@ -17,10 +17,18 @@ namespace MyWebSite.Repositories
             return await _context.Products.ToListAsync();
         }
 
-        public async Task<Product> GetByIdAsync(String id)
+        public async Task<Product> GetByIdAsync(string id)
         {
-            return await _context.Products.FindAsync(id);
+            if (Guid.TryParse(id, out var guidId))
+            {
+                return await _context.Products.FindAsync(guidId);
+            }
+            else
+            {
+                return null; // Or throw an exception if you prefer
+            }
         }
+
 
         public async Task AddAsync(Product product)
         {
