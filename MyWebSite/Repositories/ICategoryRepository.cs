@@ -10,4 +10,5 @@ namespace MyWebSite.Repositories
         Task UpdateAsync(Category category);
         Task DeleteAsync(int id);
     }
+      
 }
