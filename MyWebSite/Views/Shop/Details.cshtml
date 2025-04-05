@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = Model.Name;
+    int numQuantity = 1;
 }
 
 <!-- Product Detail Section -->
@@ -126,11 +127,12 @@
                         <span>This item is currently unavailable</span>
                     }
                 </div>
-
                 <div class="d-flex">
-                    <button class="btn btn-primary me-2" id="add-to-cart" data-id="@Model.Id">
-                        <i class="bi bi-bag-plus me-2"></i>Add to Cart
-                    </button>
+                    <a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-productId="@Model.Id" asp-route-quantity="1">
+                        <button class="btn btn-primary me-2" id="add-to-cart" data-id="@Model.Id">
+                            <i class="bi bi-bag-plus me-2"></i>Add to Cart
+                        </button>
+                    </a>
                     <button class="btn btn-outline me-2" id="wishlist-btn">
                         <i class="bi bi-heart"></i>
                     </button>
@@ -389,41 +391,45 @@
         });
 
         // Add to cart
-        document.getElementById('add-to-cart').addEventListener('click', function() {
-            const productId = this.getAttribute('data-id');
-            const quantity = document.getElementById('product-quantity').value;
+                document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-id');
+                const quantityInput = document.getElementById('product-quantity');
+                const quantity = quantityInput ? quantityInput.value : 1; // Default to 1 if no quantity input exists
 
-            // Add animation
-            this.innerHTML = '<i class="bi bi-check me-2"></i>Added';
-            this.classList.replace('btn-primary', 'btn-success');
+                // Add animation to button
+                this.innerHTML = '<i class="bi bi-check me-2"></i>Added';
+                this.classList.replace('btn-primary', 'btn-success');
 
-            // Reset after 2 seconds
-            setTimeout(() => {
-                this.innerHTML = '<i class="bi bi-bag-plus me-2"></i>Add to Cart';
-                this.classList.replace('btn-success', 'btn-primary');
-
-                // Show toast notification
-                const toast = document.createElement('div');
-                toast.className = 'position-fixed bottom-0 end-0 p-3';
-                toast.style.zIndex = '11';
-                toast.innerHTML = `
-                    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
-                        <div class="toast-header">
-                            <strong class="me-auto">ModernHome</strong>
-                            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                        </div>
-                        <div class="toast-body">
-                            Product added to your cart!
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(toast);
-
+                // Reset after 2 seconds
                 setTimeout(() => {
-                    document.body.removeChild(toast);
-                }, 3000);
-            }, 1000);
+                    this.innerHTML = '<i class="bi bi-bag-plus me-2"></i>Add to Cart';
+                    this.classList.replace('btn-success', 'btn-primary');
+
+                    // Show toast notification
+                    const toast = document.createElement('div');
+                    toast.className = 'position-fixed bottom-0 end-0 p-3';
+                    toast.style.zIndex = '11';
+                    toast.innerHTML = `
+                        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                            <div class="toast-header">
+                                <strong class="me-auto">ModernHome</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                            </div>
+                            <div class="toast-body">
+                                Product added to your cart!
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(toast);
+
+                    setTimeout(() => {
+                        document.body.removeChild(toast);
+                    }, 3000);
+                }, 1000);
+            });
         });
+
 
         // Wishlist functionality
         document.getElementById('wishlist-btn').addEventListener('click', function() {
@@ -451,6 +457,7 @@
                     }
                 });
             });
+
 
             star.addEventListener('click', function() {
                 const value = this.getAttribute('data-value');
