@@ -1,4 +1,6 @@
 ﻿@model List<MyWebSite.Models.Product>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
 @{
     ViewData["Title"] = "Products";
     Layout = "_AdminLayout";
@@ -8,7 +10,7 @@
     <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="mb-0">Product Management</h4>
-        <a asp-area="Admin" asp-controller="Product" asp-action="Create" class="btn btn-primary">
+        <a asp-area="Admin" asp-controller="Product" asp-action="Add" class="btn btn-primary">
             <i class="bi bi-plus"></i> Add Product
         </a>
     </div>
@@ -80,31 +82,105 @@
                             <option value="">All Categories</option>
                             @foreach (var category in ViewBag.Categories as IEnumerable<MyWebSite.Models.Category>)
                             {
-                                <option value="@category.Id" @(ViewBag.CategoryId != null && ViewBag.CategoryId.ToString() == category.Id.ToString() ? "selected" : "")>
-                                    @category.Name
-                                </option>
+                                if (ViewBag.CategoryId != null && ViewBag.CategoryId.ToString() == category.Id.ToString())
+                                {
+                                    <option value="@category.Id" selected>@category.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@category.Id">@category.Name</option>
+                                }
                             }
-
                         </select>
                     </div>
                     <div class="col-md-2">
                         <label for="stockStatus" class="form-label">Stock Status</label>
                         <select class="form-control" id="stockStatus" name="stockStatus">
                             <option value="">All Status</option>
-                            <option value="instock" @(ViewBag.StockStatus == "instock" ? "selected" : "")>In Stock</option>
-                            <option value="lowstock" @(ViewBag.StockStatus == "lowstock" ? "selected" : "")>Low Stock</option>
-                            <option value="outofstock" @(ViewBag.StockStatus == "outofstock" ? "selected" : "")>Out of Stock</option>
+                            @if (ViewBag.StockStatus == "instock")
+                            {
+                                <option value="instock" selected>In Stock</option>
+                            }
+                            else
+                            {
+                                <option value="instock">In Stock</option>
+                            }
+
+                            @if (ViewBag.StockStatus == "lowstock")
+                            {
+                                <option value="lowstock" selected>Low Stock</option>
+                            }
+                            else
+                            {
+                                <option value="lowstock">Low Stock</option>
+                            }
+
+                            @if (ViewBag.StockStatus == "outofstock")
+                            {
+                                <option value="outofstock" selected>Out of Stock</option>
+                            }
+                            else
+                            {
+                                <option value="outofstock">Out of Stock</option>
+                            }
                         </select>
                     </div>
                     <div class="col-md-2">
                         <label for="sortOrder" class="form-label">Sort By</label>
                         <select class="form-control" id="sortOrder" name="sortOrder">
-                            <option value="name" @(ViewBag.CurrentSort == "name" ? "selected" : "")>Name (A-Z)</option>
-                            <option value="name_desc" @(ViewBag.CurrentSort == "name_desc" ? "selected" : "")>Name (Z-A)</option>
-                            <option value="price" @(ViewBag.CurrentSort == "price" ? "selected" : "")>Price (Low-High)</option>
-                            <option value="price_desc" @(ViewBag.CurrentSort == "price_desc" ? "selected" : "")>Price (High-Low)</option>
-                            <option value="date" @(ViewBag.CurrentSort == "date" ? "selected" : "")>Newest First</option>
-                            <option value="date_desc" @(ViewBag.CurrentSort == "date_desc" ? "selected" : "")>Oldest First</option>
+                            @if (ViewBag.CurrentSort == "name")
+                            {
+                                <option value="name" selected>Name (A-Z)</option>
+                            }
+                            else
+                            {
+                                <option value="name">Name (A-Z)</option>
+                            }
+
+                            @if (ViewBag.CurrentSort == "name_desc")
+                            {
+                                <option value="name_desc" selected>Name (Z-A)</option>
+                            }
+                            else
+                            {
+                                <option value="name_desc">Name (Z-A)</option>
+                            }
+
+                            @if (ViewBag.CurrentSort == "price")
+                            {
+                                <option value="price" selected>Price (Low-High)</option>
+                            }
+                            else
+                            {
+                                <option value="price">Price (Low-High)</option>
+                            }
+
+                            @if (ViewBag.CurrentSort == "price_desc")
+                            {
+                                <option value="price_desc" selected>Price (High-Low)</option>
+                            }
+                            else
+                            {
+                                <option value="price_desc">Price (High-Low)</option>
+                            }
+
+                            @if (ViewBag.CurrentSort == "date")
+                            {
+                                <option value="date" selected>Newest First</option>
+                            }
+                            else
+                            {
+                                <option value="date">Newest First</option>
+                            }
+
+                            @if (ViewBag.CurrentSort == "date_desc")
+                            {
+                                <option value="date_desc" selected>Oldest First</option>
+                            }
+                            else
+                            {
+                                <option value="date_desc">Oldest First</option>
+                            }
                         </select>
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
