@@ -16,7 +16,7 @@ builder.Services.AddSession(options =>
 // Register repositories
 builder.Services.AddScoped<IProductRepository, EFProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, EFCategoryRepository>();
-
+builder.Services.AddScoped<IDiscountCodeRepositorycs, EFDiscountCodeRepository>();
 // Configure Database Context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

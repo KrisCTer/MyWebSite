@@ -17,7 +17,7 @@ namespace MyWebSite.Repositories
             return await _context.Products.ToListAsync();
         }
 
-        public async Task<Product> GetByIdAsync(int id)
+        public async Task<Product> GetByIdAsync(String id)
         {
             return await _context.Products.FindAsync(id);
         }
@@ -35,7 +35,7 @@ namespace MyWebSite.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(string id)
         {
             var product = await _context.Products.FindAsync(id);
             _context.Products.Remove(product);

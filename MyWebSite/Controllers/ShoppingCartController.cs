@@ -23,7 +23,7 @@ namespace MyWebSite.Controllers
             _context = context;
             _userManager = userManager;
         }
-        public async Task<IActionResult> AddToCart(int productId, int quantity)
+        public async Task<IActionResult> AddToCart(string productId, int quantity)
         {
             // Già sứ bạn có phương thức lấy thông tin sản phẩm từ productId
             var product = await GetProductFromDatabase(productId);
@@ -49,14 +49,14 @@ namespace MyWebSite.Controllers
             return View(cart);
         }
         // Các actions khác...
-        private async Task<Product> GetProductFromDatabase(int productId)
+        private async Task<Product> GetProductFromDatabase(string productId)
         {
             // Truy vấn có số dữ liệu để lấy thông tin sản phẩm
             var product = await _productRepository.GetByIdAsync(productId);
             return product;
         }
 
-        public IActionResult RemoveFromCart(int productId)
+        public IActionResult RemoveFromCart(string productId)
         {
             var cart = HttpContext.Session.GetObjectFromJson<ShoppingCart>("Cart");
             if (cart is not null)

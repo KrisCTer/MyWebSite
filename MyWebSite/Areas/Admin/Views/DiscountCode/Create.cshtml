@@ -1,0 +1,72 @@
+﻿@model MyWebSite.Models.DiscountCode
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Thêm Mã Giảm Giá";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="row mb-5">
+        <div class="col-md-8 mx-auto text-center">
+            <h2 class="fw-semibold mb-2" style="font-size: 32px;">Thêm Mã Giảm Giá</h2>
+            <p class="text-muted" style="font-size: 16px;">Tạo mã giảm giá mới cho khách hàng sử dụng</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form asp-action="Create" method="post">
+                <div class="bg-white p-5 rounded-4 shadow-sm">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <!-- Mã giảm giá -->
+                    <div class="mb-4">
+                        <label asp-for="Code" class="form-label text-muted">Mã giảm giá</label>
+                        <input asp-for="Code" class="form-control bg-light border-0 py-3 px-3 rounded-3" placeholder="Nhập mã..." />
+                        <span asp-validation-for="Code" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Phần trăm giảm -->
+                    <div class="mb-4">
+                        <label asp-for="DiscountPercentage" class="form-label text-muted">Phần trăm giảm</label>
+                        <input asp-for="DiscountPercentage" type="number" min="0" max="100" class="form-control bg-light border-0 py-3 px-3 rounded-3" placeholder="VD: 20" />
+                        <span asp-validation-for="DiscountPercentage" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Số lần sử dụng tối đa -->
+                    <div class="mb-4">
+                        <label asp-for="MaxUsage" class="form-label text-muted">Số lượt sử dụng</label>
+                        <input asp-for="MaxUsage" type="number" min="1" class="form-control bg-light border-0 py-3 px-3 rounded-3" placeholder="VD: 100" />
+                        <span asp-validation-for="MaxUsage" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Ngày bắt đầu -->
+                    <div class="mb-4">
+                        <label asp-for="ValidFrom" class="form-label text-muted">Hiệu lực từ ngày</label>
+                        <input asp-for="ValidFrom" type="date" class="form-control bg-light border-0 py-3 px-3 rounded-3" />
+                        <span asp-validation-for="ValidFrom" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Ngày kết thúc -->
+                    <div class="mb-4">
+                        <label asp-for="ValidTo" class="form-label text-muted">Hiệu lực đến ngày</label>
+                        <input asp-for="ValidTo" type="date" class="form-control bg-light border-0 py-3 px-3 rounded-3" />
+                        <span asp-validation-for="ValidTo" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Nút Submit -->
+                    <div class="d-grid gap-3 mt-4">
+                        <button type="submit" class="btn btn-primary py-3 rounded-3" style="background-color: #0066CC; border: none;">
+                            Tạo mã giảm giá
+                        </button>
+
+                        <a asp-action="Index" class="btn btn-light py-3 border rounded-3 text-dark">
+                            Quay lại danh sách
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

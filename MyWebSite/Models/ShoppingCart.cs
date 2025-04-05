@@ -18,7 +18,7 @@
             }
         }
 
-        public void RemoveItem(int productId)
+        public void RemoveItem(string productId)
         {
             Items.RemoveAll(i => i.ProductId == productId);
         }
