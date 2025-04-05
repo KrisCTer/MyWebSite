@@ -1,0 +1,212 @@
+﻿@model List<MyWebSite.Models.Category>
+@{
+    ViewData["Title"] = "Categories";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="mb-0">Category Management</h4>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+            <i class="bi bi-plus"></i> Add Category
+        </button>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h5 class="card-title">Total Categories</h5>
+                    <div class="card-icon bg-primary">
+                        <i class="bi bi-tags"></i>
+                    </div>
+                </div>
+                <h3 class="card-value">@Model.Count</h3>
+                <p class="card-label">Across all product lines</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h5 class="card-title">Categories with Products</h5>
+                    <div class="card-icon bg-success">
+                        <i class="bi bi-box"></i>
+                    </div>
+                </div>
+                <h3 class="card-value">@Model.Count(c => c.Products != null && c.Products.Any())</h3>
+                <p class="card-label">Active categories</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h5 class="card-title">Empty Categories</h5>
+                    <div class="card-icon bg-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                </div>
+                <h3 class="card-value">@Model.Count(c => c.Products == null || !c.Products.Any())</h3>
+                <p class="card-label">Categories without products</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Table -->
+    <div class="admin-table mb-4">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Products Count</th>
+                        <th width="150">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var category in Model)
+                    {
+                        <tr>
+                            <td>@category.Id</td>
+                            <td>@category.Name</td>
+                            <td>
+                                @if (category.Products != null)
+                                {
+                                    @category.Products.Count
+                                }
+                                else
+                                {
+                                    <span>0</span>
+                                }
+                            </td>
+                            <td>
+                                <button class="action-btn" data-bs-toggle="modal" data-bs-target="#editCategoryModal"
+                                        data-id="@category.Id" data-name="@category.Name">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="action-btn delete" data-bs-toggle="modal" data-bs-target="#deleteCategoryModal"
+                                        data-id="@category.Id" data-name="@category.Name">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add Category Modal -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-area="Admin" asp-controller="Category" asp-action="Create" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="categoryName" class="form-label">Category Name</label>
+                        <input type="text" class="form-control" id="categoryName" name="Name" required maxlength="50">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Category Modal -->
+<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCategoryModalLabel">Edit Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-area="Admin" asp-controller="Category" asp-action="Edit" method="post">
+                <div class="modal-body">
+                    <input type="hidden" id="editCategoryId" name="Id">
+                    <div class="mb-3">
+                        <label for="editCategoryName" class="form-label">Category Name</label>
+                        <input type="text" class="form-control" id="editCategoryName" name="Name" required maxlength="50">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Category Modal -->
+<div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteCategoryModalLabel">Delete Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-area="Admin" asp-controller="Category" asp-action="Delete" method="post">
+                <div class="modal-body">
+                    <input type="hidden" id="deleteCategoryId" name="Id">
+                    <p>Are you sure you want to delete the category "<span id="deleteCategoryName"></span>"?</p>
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i> Warning: If this category contains products, they will be left without a category.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Edit Category Modal
+        document.addEventListener('DOMContentLoaded', function () {
+            const editModal = document.getElementById('editCategoryModal');
+            if (editModal) {
+                editModal.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    const id = button.getAttribute('data-id');
+                    const name = button.getAttribute('data-name');
+
+                    const modalIdInput = document.getElementById('editCategoryId');
+                    const modalNameInput = document.getElementById('editCategoryName');
+
+                    modalIdInput.value = id;
+                    modalNameInput.value = name;
+                });
+            }
+
+            // Delete Category Modal
+            const deleteModal = document.getElementById('deleteCategoryModal');
+            if (deleteModal) {
+                deleteModal.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    const id = button.getAttribute('data-id');
+                    const name = button.getAttribute('data-name');
+
+                    const modalIdInput = document.getElementById('deleteCategoryId');
+                    const modalNameSpan = document.getElementById('deleteCategoryName');
+
+                    modalIdInput.value = id;
+                    modalNameSpan.textContent = name;
+                });
+            }
+        });
+    </script>
+}

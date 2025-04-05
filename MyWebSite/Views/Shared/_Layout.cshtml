@@ -492,7 +492,14 @@
 										@if (User.Identity.IsAuthenticated)
 										{
 											<span>Hello, @User.Identity.Name</span>
-											<a asp-area="Identity" asp-page="/Account/Logout">Log Out</a>
+											@if (User.IsInRole("Admin"))
+											{
+												<a href="/admin/dashboard" class="btn btn-primary ms-3">Go to Admin Dashboard</a>
+											}
+											else
+											{
+												<a asp-area="Identity" asp-page="/Account/Logout">Log Out</a>
+											}
 										}
 										else
 										{
@@ -500,6 +507,7 @@
 											<a asp-area="Identity" asp-page="/Account/Register">Register</a>
 										}
 									</div>
+
 									<a class="nav-link" asp-controller="Home" asp-action="Wishlist">
 										<i class="bi bi-heart"></i>
 									</a>

@@ -458,14 +458,14 @@
         </div>
         <div class="admin-menu">
             <div class="menu-heading">Dashboard</div>
-            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="menu-item  @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")">
+                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="menu-item  @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
             <div class="menu-heading">Product Management</div>
-            <a asp-area="Admin" asp-controller="Product" asp-action="Index" class="menu-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Product" ? "active" : "")">
+                <a asp-area="Admin" asp-controller="Product" asp-action="Index" class="menu-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Product" ? "active" : "")">
                 <i class="bi bi-grid"></i> Products
             </a>
-            <a href="#" class="menu-item">
+                <a asp-area="Admin" asp-controller="Category" asp-action="Index" class="menu-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Category" ? "active" : "")">
                 <i class="bi bi-tags"></i> Categories
             </a>
             <a asp-area="Admin" asp-controller="DiscountCode" asp-action="Index" class="menu-item">
@@ -476,7 +476,7 @@
             </a>
 
             <div class="menu-heading">Orders</div>
-            <a href="#" class="menu-item">
+                <a asp-area="Admin" asp-controller="Order" asp-action="Index" class="menu-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Order" ? "active" : "")">
                 <i class="bi bi-cart3"></i> All Orders
             </a>
             <a href="#" class="menu-item">
@@ -487,7 +487,7 @@
             </a>
 
             <div class="menu-heading">Customers</div>
-            <a href="#" class="menu-item">
+            <a asp-area="Admin" asp-controller="DiscountCode" asp-action="Index" class="menu-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "DiscountCode" ? "active" : "")">
                 <i class="bi bi-people"></i> Customers
             </a>
             <a href="#" class="menu-item">
@@ -529,17 +529,18 @@
                 <div class="header-title">Dashboard</div>
             </div>
             <div class="header-actions">
-                    <div class="auth-links me-3">
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <span>Hello, @User.Identity.Name</span>
-                            <a asp-area="Identity" asp-page="/Account/Logout">Log Out</a>
-                        }
-                        else
-                        {
-                            <a asp-area="Identity" asp-page="/Account/Login">Sign In</a>
-                            <a asp-area="Identity" asp-page="/Account/Register">Register</a>
-                        }
+                <div class="auth-links me-3">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <span>Hello, @User.Identity.Name</span>
+                        <a asp-area="Identity" asp-page="/Account/Logout">Log Out</a>
+                        <a href="/" class="btn btn-primary ms-3">Go to Shopping</a>
+                    }
+                    else
+                    {
+                        <a asp-area="Identity" asp-page="/Account/Login">Sign In</a>
+                        <a asp-area="Identity" asp-page="/Account/Register">Register</a>
+                    }
                 </div>
             </div>
         </div>
