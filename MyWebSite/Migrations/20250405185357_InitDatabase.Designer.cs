@@ -12,8 +12,8 @@ using MyWebSite.Models;
 namespace MyWebSite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250405155333_update_UserDiscountCode")]
-    partial class update_UserDiscountCode
+    [Migration("20250405185357_InitDatabase")]
+    partial class InitDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -340,6 +340,32 @@ namespace MyWebSite.Migrations
                     b.ToTable("discountCodes");
                 });
 
+            modelBuilder.Entity("MyWebSite.Models.LoyalCustomer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("JoinedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RewardPoints")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("LoyalCustomers");
+                });
+
             modelBuilder.Entity("MyWebSite.Models.Order", b =>
                 {
                     b.Property<int>("OrderId")
@@ -387,17 +413,11 @@ namespace MyWebSite.Migrations
 
             modelBuilder.Entity("MyWebSite.Models.OrderDetail", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("OrderId")
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Discount")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -412,9 +432,7 @@ namespace MyWebSite.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
+                    b.HasKey("OrderId");
 
                     b.HasIndex("ProductId1");
 
@@ -665,6 +683,17 @@ namespace MyWebSite.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MyWebSite.Models.LoyalCustomer", b =>
+                {
+                    b.HasOne("MyWebSite.Models.ApplicationUser", "User")
+                        .WithOne("LoyalCustomer")
+                        .HasForeignKey("MyWebSite.Models.LoyalCustomer", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MyWebSite.Models.Order", b =>
                 {
                     b.HasOne("MyWebSite.Models.ApplicationUser", "ApplicationUser")
@@ -771,6 +800,8 @@ namespace MyWebSite.Migrations
 
             modelBuilder.Entity("MyWebSite.Models.ApplicationUser", b =>
                 {
+                    b.Navigation("LoyalCustomer");
+
                     b.Navigation("Orders");
 
                     b.Navigation("Reviews");

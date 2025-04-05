@@ -360,7 +360,7 @@ namespace MyWebSite.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("LoyalCustomer");
+                    b.ToTable("LoyalCustomers");
                 });
 
             modelBuilder.Entity("MyWebSite.Models.Order", b =>
@@ -410,17 +410,11 @@ namespace MyWebSite.Migrations
 
             modelBuilder.Entity("MyWebSite.Models.OrderDetail", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("OrderId")
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Discount")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -435,9 +429,7 @@ namespace MyWebSite.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
+                    b.HasKey("OrderId");
 
                     b.HasIndex("ProductId1");
 

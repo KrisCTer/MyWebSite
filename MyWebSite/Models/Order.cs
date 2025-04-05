@@ -15,8 +15,7 @@ namespace MyWebSite.Models
         [Required]
         public decimal Amount { get; set; }
         public decimal TotalPrice { get; set; }
-        public string ShippingAddress { get; set; }
-        
+        public string? ShippingAddress { get; set; }
         public string Status { get; set; } = "Pending"; // e.g., Pending, Shipped, Delivered
         public string? Notes { get; set; }
         public DateTime? ShippedDate { get; set; }
