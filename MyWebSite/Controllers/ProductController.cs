@@ -75,7 +75,7 @@ namespace MyWebSite.Controllers
             }
             return "/images/" + image.FileName;
         }
-        public async Task<IActionResult> Display(int id)
+        public async Task<IActionResult> Display(string id)
         {
             var product = await _productRepository.GetByIdAsync(id);
             if (product == null)
@@ -84,7 +84,7 @@ namespace MyWebSite.Controllers
             }
             return View(product);
         }
-        public async Task<IActionResult> Update(int id)
+        public async Task<IActionResult> Update(string id)
         {
             var product = await _productRepository.GetByIdAsync(id);
             if (product == null)
@@ -113,7 +113,7 @@ namespace MyWebSite.Controllers
         }
 
 
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
             var product = await _productRepository.GetByIdAsync(id);
             if (product == null)
@@ -125,7 +125,7 @@ namespace MyWebSite.Controllers
 
 
         [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             await _productRepository.DeleteAsync(id);
             return RedirectToAction(nameof(Index));

@@ -1,0 +1,156 @@
+﻿@model IEnumerable<MyWebSite.Models.DiscountCode>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Mã Giảm Giá";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid px-0">
+    <!-- Hero Section -->
+    <div class="bg-light py-5 mb-5">
+        <div class="container">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold">Mã Giảm Giá</h1>
+                    <p class="lead text-secondary mb-5">Quản lý và kiểm tra các mã giảm giá hiện có</p>
+                    <a asp-action="Create" class="btn btn-outline-dark rounded-pill px-4 py-2">
+                        Thêm Mã Giảm Giá
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="container mb-5">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary rounded-pill dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            Lọc theo
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                            <li><a class="dropdown-item" href="#">Tất cả</a></li>
+                            <li><a class="dropdown-item" href="#">Sắp hết hạn</a></li>
+                            <li><a class="dropdown-item" href="#">Đã hết hạn</a></li>
+                            <li><a class="dropdown-item" href="#">Còn hiệu lực</a></li>
+                        </ul>
+                    </div>
+                    <div class="form-outline" style="min-width: 250px;">
+                        <input type="search" id="discountSearch" class="form-control rounded-pill" placeholder="Tìm kiếm mã giảm giá" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Discount Code Grid -->
+    <div class="container">
+        <div class="row g-4">
+            @if (Model.Any())
+            {
+                @foreach (var discount in Model)
+                {
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 border-0 rounded-4 shadow-sm discount-card">
+                            <div class="card-body p-4">
+                                <h5 class="card-title fw-bold">@discount.Code</h5>
+                                <p class="text-secondary small mb-3">
+                                    Giảm @discount.DiscountPercentage% | Sử dụng: @discount.UsageCount / @discount.MaxUsage
+                                </p>
+                                <span class="badge bg-light text-dark rounded-pill px-3 py-2 mb-3">
+                                    @(discount.Status ? "Còn hiệu lực" : "Hết hạn")
+                                </span>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <a asp-action="Details" asp-route-id="@discount.Id" class="btn btn-outline-dark rounded-pill px-4">Chi tiết</a>
+                                    <div>
+                                        <a asp-action="Edit" asp-route-id="@discount.Id" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 38px; height: 38px;">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@discount.Id" class="btn btn-sm btn-outline-danger rounded-circle ms-2" style="width: 38px; height: 38px;">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center py-5">
+                    <div style="max-width: 500px; margin: 0 auto;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="#d1d1d6" class="bi bi-ticket-perforated" viewBox="0 0 16 16">
+                            <path d="M4 1a1 1 0 0 0-1 1v2a1 1 0 0 1 0 2v2a1 1 0 0 1 0 2v2a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-2a1 1 0 0 1 0-2V6a1 1 0 0 1 0-2V2a1 1 0 0 0-1-1H4Zm9 1v2.146a2 2 0 0 1 0 3.708V9.146a2 2 0 0 1 0 3.708V15H4v-2.146a2 2 0 0 1 0-3.708V7.146a2 2 0 0 1 0-3.708V2h9Z" />
+                        </svg>
+                        <h3 class="mt-4 mb-3 fw-light">Chưa có mã giảm giá nào</h3>
+                        <p class="text-secondary mb-4">Thêm mã giảm giá mới để kích thích mua hàng</p>
+                        <a asp-action="Create" class="btn btn-dark rounded-pill px-4 py-2">Thêm Mã Giảm Giá</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Add custom styles -->
+<style>
+    body {
+        font-family: 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    .discount-card {
+        transition: all 0.3s ease;
+    }
+
+        .discount-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+        }
+
+    .btn-outline-dark, .btn-dark {
+        font-weight: 500;
+    }
+
+    .rounded-pill {
+        border-radius: 50rem !important;
+    }
+
+    .rounded-4 {
+        border-radius: 20px !important;
+    }
+
+    .display-4 {
+        font-size: 2.5rem;
+        letter-spacing: -0.02em;
+    }
+
+    input.form-control {
+        background-color: rgba(0, 0, 0, 0.05);
+        border: none;
+        padding: 10px 20px;
+    }
+
+        input.form-control:focus {
+            background-color: rgba(0, 0, 0, 0.07);
+            box-shadow: none;
+        }
+</style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#discountSearch").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $(".discount-card").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+        });
+    </script>
+}
