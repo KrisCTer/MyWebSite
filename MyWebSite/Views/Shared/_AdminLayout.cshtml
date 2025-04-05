@@ -479,40 +479,40 @@
                 <a asp-area="Admin" asp-controller="Order" asp-action="Index" class="menu-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Order" ? "active" : "")">
                 <i class="bi bi-cart3"></i> All Orders
             </a>
-            <a href="#" class="menu-item">
+                    <a href="#" class="menu-item" style="display: none;">
                 <i class="bi bi-truck"></i> Shipments
             </a>
-            <a href="#" class="menu-item">
+                    <a href="#" class="menu-item" style="display: none;">
                 <i class="bi bi-arrow-return-left"></i> Returns
             </a>
 
             <div class="menu-heading">Customers</div>
-            <a asp-area="Admin" asp-controller="DiscountCode" asp-action="Index" class="menu-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "DiscountCode" ? "active" : "")">
+                    <a asp-area="Admin" asp-controller="User" asp-action="Index" class="menu-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" ? "active" : "")">
                 <i class="bi bi-people"></i> Customers
             </a>
-            <a href="#" class="menu-item">
+                    <a href="#" class="menu-item" style="display: none;">
                 <i class="bi bi-chat-left-text"></i> Messages
             </a>
 
-            <div class="menu-heading">Content</div>
-            <a href="#" class="menu-item">
+                    <div class="menu-heading" style="display: none;">Content</div>
+                    <a href="#" class="menu-item" style="display: none;">
                 <i class="bi bi-window"></i> Homepage
             </a>
-            <a href="#" class="menu-item">
+                    <a href="#" class="menu-item" style="display: none;">
                 <i class="bi bi-file-earmark-text"></i> Pages
             </a>
-            <a href="#" class="menu-item">
+                    <a href="#" class="menu-item" style="display: none;">
                 <i class="bi bi-megaphone"></i> Promotions
             </a>
 
-            <div class="menu-heading">Settings</div>
-            <a href="#" class="menu-item">
+                    <div class="menu-heading" style="display: none;">Settings</div>
+                    <a href="#" class="menu-item" style="display: none;">
                 <i class="bi bi-gear"></i> Store Settings
             </a>
-            <a href="#" class="menu-item">
+                    <a href="#" class="menu-item" style="display: none;">
                 <i class="bi bi-shield-check"></i> User Roles
             </a>
-            <a href="#" class="menu-item">
+                    <a href="#" class="menu-item" style="display: none;">
                 <i class="bi bi-tools"></i> Maintenance
             </a>
         </div>
