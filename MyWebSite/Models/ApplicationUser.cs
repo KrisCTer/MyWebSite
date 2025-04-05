@@ -20,5 +20,8 @@ namespace MyWebSite.Models
         public DateTime RegistrationDate { get; set; } = DateTime.Now;
         public List<Order>? Orders { get; set; }
         public List<Review>? Reviews { get; set; }
+        public List<UserDiscountCode>? UserDiscountCodes { get; set; }
+        public LoyalCustomer? LoyalCustomer { get; set; }
+
     }
 }

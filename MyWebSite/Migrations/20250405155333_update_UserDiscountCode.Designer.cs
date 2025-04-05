@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyWebSite.Models;
 
@@ -11,9 +12,11 @@ using MyWebSite.Models;
 namespace MyWebSite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250405155333_update_UserDiscountCode")]
+    partial class update_UserDiscountCode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -335,32 +338,6 @@ namespace MyWebSite.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("discountCodes");
-                });
-
-            modelBuilder.Entity("MyWebSite.Models.LoyalCustomer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("JoinedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("RewardPoints")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("LoyalCustomer");
                 });
 
             modelBuilder.Entity("MyWebSite.Models.Order", b =>
@@ -688,17 +665,6 @@ namespace MyWebSite.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MyWebSite.Models.LoyalCustomer", b =>
-                {
-                    b.HasOne("MyWebSite.Models.ApplicationUser", "User")
-                        .WithOne("LoyalCustomer")
-                        .HasForeignKey("MyWebSite.Models.LoyalCustomer", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("MyWebSite.Models.Order", b =>
                 {
                     b.HasOne("MyWebSite.Models.ApplicationUser", "ApplicationUser")
@@ -805,8 +771,6 @@ namespace MyWebSite.Migrations
 
             modelBuilder.Entity("MyWebSite.Models.ApplicationUser", b =>
                 {
-                    b.Navigation("LoyalCustomer");
-
                     b.Navigation("Orders");
 
                     b.Navigation("Reviews");

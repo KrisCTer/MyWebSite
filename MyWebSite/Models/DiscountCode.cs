@@ -27,5 +27,6 @@ namespace MyWebSite.Models
         public DateTime ValidTo { get; set; }
 
         public bool Status { get; set; }
+        public List<UserDiscountCode>? UserDiscountCodes { get; set; }
     }
 }
