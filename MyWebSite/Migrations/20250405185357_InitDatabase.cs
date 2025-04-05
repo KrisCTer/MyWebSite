@@ -216,6 +216,27 @@ namespace MyWebSite.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "LoyalCustomers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    JoinedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RewardPoints = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LoyalCustomers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LoyalCustomers_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Orders",
                 columns: table => new
                 {
@@ -268,6 +289,30 @@ namespace MyWebSite.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserDiscountCodes",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DiscountCodeId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserDiscountCodes", x => new { x.UserId, x.DiscountCodeId });
+                    table.ForeignKey(
+                        name: "FK_UserDiscountCodes_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserDiscountCodes_discountCodes_DiscountCodeId",
+                        column: x => x.DiscountCodeId,
+                        principalTable: "discountCodes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Payment",
                 columns: table => new
                 {
@@ -293,10 +338,8 @@ namespace MyWebSite.Migrations
                 name: "OrderDetails",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     OrderId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Discount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -304,7 +347,7 @@ namespace MyWebSite.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderDetails", x => x.Id);
+                    table.PrimaryKey("PK_OrderDetails", x => x.OrderId);
                     table.ForeignKey(
                         name: "FK_OrderDetails_Orders_OrderId",
                         column: x => x.OrderId,
@@ -435,9 +478,10 @@ namespace MyWebSite.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderDetails_OrderId",
-                table: "OrderDetails",
-                column: "OrderId");
+                name: "IX_LoyalCustomers_UserId",
+                table: "LoyalCustomers",
+                column: "UserId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_ProductId1",
@@ -474,6 +518,11 @@ namespace MyWebSite.Migrations
                 name: "IX_Review_ProductId1",
                 table: "Review",
                 column: "ProductId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserDiscountCodes_DiscountCodeId",
+                table: "UserDiscountCodes",
+                column: "DiscountCodeId");
         }
 
         /// <inheritdoc />
@@ -498,7 +547,7 @@ namespace MyWebSite.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "discountCodes");
+                name: "LoyalCustomers");
 
             migrationBuilder.DropTable(
                 name: "OrderDetails");
@@ -516,6 +565,9 @@ namespace MyWebSite.Migrations
                 name: "Review");
 
             migrationBuilder.DropTable(
+                name: "UserDiscountCodes");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -523,6 +575,9 @@ namespace MyWebSite.Migrations
 
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "discountCodes");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

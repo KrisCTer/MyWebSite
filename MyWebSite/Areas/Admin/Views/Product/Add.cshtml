@@ -20,6 +20,7 @@
     <div class="dashboard-card">
         <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @Html.AntiForgeryToken()
 
             <div class="row">
                 <!-- Basic Information -->
@@ -46,9 +47,14 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label asp-for="CategoryId" class="form-label">Category</label>
-                            <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories">
-                                <option value="">-- Select Category --</option>
-                            </select>
+                            <div class="input-group">
+                                <select asp-for="CategoryId" id="categorySelect" class="form-control" asp-items="ViewBag.Categories">
+                                    <option value="">-- Select Category --</option>
+                                </select>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
                             <span asp-validation-for="CategoryId" class="text-danger"></span>
                         </div>
                     </div>
@@ -137,24 +143,113 @@
     </div>
 </div>
 
+<!-- Add Category Modal -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Đảm bảo form gửi đến endpoint đúng -->
+                <form id="categoryForm" method="post" action="@Url.Action("CreateCategory", "Product", new { area = "Admin" })">
+                    @Html.AntiForgeryToken()
+                    <!-- Category form fields based on Category model -->
+                    <div class="mb-3">
+                        <label for="categoryName" class="form-label">Category Name</label>
+                        <input type="text" class="form-control" id="categoryName" name="Name" maxlength="50" placeholder="Enter category name" required>
+                        <div class="invalid-feedback">
+                            Category name is required (max 50 characters).
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" id="saveCategory" class="btn btn-primary">
+                            <span id="saveCategoryText">Save Category</span>
+                            <span id="saveCategorySpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (TempData["CategorySuccess"] != null)
+{
+    <div class="alert alert-success mt-3">
+        @TempData["CategorySuccess"]
+    </div>
+    <script>
+        // Tự động đóng thông báo sau 3 giây
+        setTimeout(() => {
+            document.querySelector('.alert-success').style.display = 'none';
+        }, 3000);
+    </script>
+}
+@if (TempData["CategoryError"] != null)
+{
+    <div class="alert alert-danger mt-3">
+        @TempData["CategoryError"]
+    </div>
+}
+
 @section Scripts {
     <script>
-        // Preview images when selected
         document.addEventListener('DOMContentLoaded', function() {
-            const primaryImageInput = document.querySelector('input[name="PrimaryImage"]');
-            const additionalImagesInput = document.querySelector('input[name="AdditionalImages"]');
+            const categoryNameInput = document.getElementById('categoryName');
+            const categoryForm = document.getElementById('categoryForm');
+            const saveCategoryText = document.getElementById('saveCategoryText');
+            const saveCategorySpinner = document.getElementById('saveCategorySpinner');
 
-            // Simple validation for file size
-            primaryImageInput.addEventListener('change', function() {
-                if (this.files[0] && this.files[0].size > 2 * 1024 * 1024) {
-                    alert('Primary image must be less than 2MB');
-                    this.value = '';
+            // Reset modal when hidden
+            $('#addCategoryModal').on('hidden.bs.modal', function () {
+                categoryNameInput.value = '';
+                categoryNameInput.classList.remove('is-invalid');
+            });
+
+            // Validate category name on input
+            categoryNameInput.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    this.classList.remove('is-invalid');
                 }
             });
 
-            // Additional client-side validation can be added here
+            // Add form submission handler
+            categoryForm.addEventListener('submit', function(e) {
+                const categoryName = categoryNameInput.value.trim();
+
+                if (!categoryName) {
+                    e.preventDefault(); // Prevent form submission
+                    categoryNameInput.classList.add('is-invalid');
+                    return;
+                }
+
+                if (categoryName.length > 50) {
+                    e.preventDefault(); // Prevent form submission
+                    categoryNameInput.classList.add('is-invalid');
+                    return;
+                }
+
+                // Show loading spinner
+                saveCategoryText.classList.add('d-none');
+                saveCategorySpinner.classList.remove('d-none');
+                document.getElementById('saveCategory').disabled = true;
+
+                // Let the form submit normally to the server
+            });
+
+            // Nếu có thông báo thành công, hiển thị và tự động đóng sau 3 giây
+            const successAlert = document.querySelector('.alert-success');
+            if (successAlert) {
+                setTimeout(() => {
+                    successAlert.style.display = 'none';
+                }, 3000);
+            }
         });
     </script>
+}
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
