@@ -48,7 +48,7 @@
                                         </td>
                                         <td>@((item.Price * item.Quantity).ToString("C"))</td>
                                         <td>
-                                            <a asp-action="RemoveFromCart" asp-route-productId="@item.ProductId" 
+                                            <a asp-action="RemoveFromCart" asp-route-productId="@item.ProductId"
                                                class="btn btn-sm text-danger">
                                                 <i class="bi bi-trash"></i>
                                             </a>
@@ -74,16 +74,26 @@
                         <hr />
                         <div class="d-flex justify-content-between mb-2">
                             <p class="mb-0">Subtotal</p>
-                            <p class="mb-0">@Model.Items.Sum(i => i.Price * i.Quantity).ToString("C")</p>
+                            <p class="mb-0" id="subtotal">@Model.Items.Sum(i => i.Price * i.Quantity).ToString("C")</p>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <p class="mb-0">Shipping</p>
                             <p class="mb-0">Free</p>
                         </div>
+
+                        <!-- Voucher Input -->
+                        <div class="d-flex justify-content-between mb-2">
+                            <label for="voucherCode" class="mb-0">Voucher Code</label>
+                            <div class="input-group">
+                                <input type="text" id="voucherCode" class="form-control" placeholder="Enter your voucher code" />
+                                <button class="btn btn-primary" type="button" id="applyVoucherBtn">Apply</button>
+                            </div>
+                        </div>
+
                         <hr />
                         <div class="d-flex justify-content-between mb-4">
                             <p class="mb-0 fw-bold">Total</p>
-                            <p class="mb-0 fw-bold">@Model.Items.Sum(i => i.Price * i.Quantity).ToString("C")</p>
+                            <p class="mb-0 fw-bold" id="total">@Model.Items.Sum(i => i.Price * i.Quantity).ToString("C")</p>
                         </div>
 
                         <form asp-action="CheckOut" method="post">
@@ -112,3 +122,39 @@
         </div>
     }
 </div>
+
+@section Scripts {
+    <script>
+        document.getElementById("applyVoucherBtn").addEventListener("click", function () {
+            var voucherCode = document.getElementById("voucherCode").value;
+
+            // Send AJAX request to apply the discount
+            fetch('@Url.Action("ApplyDiscountCode", "ShoppingCart")', {
+                method: 'POST',
+                body: JSON.stringify({ voucherCode: voucherCode }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Calculate discount and update total
+                    var subtotal = @Model.Items.Sum(i => i.Price * i.Quantity);
+                    var discount = data.discountPercentage;
+                    var total = subtotal - (subtotal * discount);
+
+                    // Update the total and subtotal
+                    document.getElementById("total").innerText = total.toFixed(2);
+                    alert("Discount applied successfully!");
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred while applying the discount.");
+            });
+        });
+    </script>
+}

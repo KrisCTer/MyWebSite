@@ -81,9 +81,9 @@
                     <div class="dropdown">
                         <button class="btn btn-outline dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             @(string.IsNullOrEmpty((string)ViewData["CurrentSort"]) ? "Name (A-Z)" :
-                                                        ViewData["CurrentSort"].ToString() == "name_desc" ? "Name (Z-A)" :
-                                                        ViewData["CurrentSort"].ToString() == "Price" ? "Price (Low to High)" :
-                                                        ViewData["CurrentSort"].ToString() == "price_desc" ? "Price (High to Low)" : "Name (A-Z)")
+                                ViewData["CurrentSort"].ToString() == "name_desc" ? "Name (Z-A)" :
+                                ViewData["CurrentSort"].ToString() == "Price" ? "Price (Low to High)" :
+                                ViewData["CurrentSort"].ToString() == "price_desc" ? "Price (High to Low)" : "Name (A-Z)")
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="sortDropdown">
                             <li><a class="dropdown-item" asp-action="Index" asp-route-sortOrder="" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name (A-Z)</a></li>
@@ -139,35 +139,35 @@
                                     }
                                 </div>
                             </div>
-                           
-                                <h5 class="product-title">
-                                    <a asp-action="Details" asp-route-id="@product.ProductId" class="text-decoration-none text-dark">@product.Name</a>
-                                </h5>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="product-price">
-                                        @if (product.ProductDetail != null && product.ProductDetail.Discount > 0)
-                                        {
-                                            <span class="text-decoration-line-through text-muted me-2">$@product.Price.ToString("F2")</span>
-                                            <span class="text-danger">$@((product.Price * (1 - product.ProductDetail.Discount / 100m)).ToString("F2"))</span>
-                                        }
-                                        else
-                                        {
-                                            <span>$@product.Price.ToString("F2")</span>
-                                        }
-                                    </div>
-                                    <div>
-                                        <span class="text-warning">
-                                            <i class="bi bi-star-fill"></i>
-                                            <i class="bi bi-star-fill"></i>
-                                            <i class="bi bi-star-fill"></i>
-                                            <i class="bi bi-star-fill"></i>
-                                            <i class="bi bi-star-half"></i>
-                                        </span>
-                                    </div>
+
+                            <h5 class="product-title">
+                                <a asp-action="Details" asp-route-id="@product.ProductId" class="text-decoration-none text-dark">@product.Name</a>
+                            </h5>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="product-price">
+                                    @if (product.ProductDetail != null && product.ProductDetail.Discount > 0)
+                                    {
+                                        <span class="text-decoration-line-through text-muted me-2">$@product.Price.ToString("F2")</span>
+                                        <span class="text-danger">$@((product.Price * (1 - product.ProductDetail.Discount / 100m)).ToString("F2"))</span>
+                                    }
+                                    else
+                                    {
+                                        <span>$@product.Price.ToString("F2")</span>
+                                    }
+                                </div>
+                                <div>
+                                    <span class="text-warning">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-half"></i>
+                                    </span>
                                 </div>
                             </div>
                         </div>
-                
+                    </div>
+
                 }
             </div>
 

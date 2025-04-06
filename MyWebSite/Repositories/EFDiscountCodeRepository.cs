@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MyWebSite.Models;
 
 namespace MyWebSite.Repositories
@@ -88,6 +89,50 @@ namespace MyWebSite.Repositories
         {
             _context.discountCodes.Update(discountCode);
             await _context.SaveChangesAsync();
+        }
+        public async Task<IActionResult> ApplyVoucher(string code)
+        {
+            var isValidCode = await IsValidCode(code);
+            var isExpried = await IsCodeExpired(code);
+            var isUsedUp = await IsCodeUsedUp(code);
+            if (isExpried)
+            {
+                return new JsonResult(new { success = false, message = "The voucher code has expired." });
+            }
+
+            if (isUsedUp)
+            {
+                return new JsonResult(new { success = false, message = "The voucher code has been used up." });
+            }
+
+            if (!isValidCode)
+            {
+                return new JsonResult(new { success = false, message = "Invalid voucher code." });
+            }
+
+
+            // Nếu mã hợp lệ, lấy tỷ lệ giảm giá và trả về
+            // Nếu mã hợp lệ, lấy tỷ lệ giảm giá và trả về
+            var discountPercentage = await GetDiscountPercentage(code);
+            return new JsonResult(new { success = true, discountPercentage });
+        }
+        public async Task<int> GetDiscountPercentage(string code)
+        {
+            var discountCode = await _context.discountCodes
+                .Where(dc => dc.Code == code)
+                .FirstOrDefaultAsync();
+
+            if (discountCode != null)
+            {
+                return discountCode.DiscountPercentage;  // Assuming DiscountPercentage is a property of DiscountCode.
+            }
+
+            return 0;  // Return 0 if the code is not found or invalid.
+        }
+
+        Task IDiscountCodeRepositorycs.ApplyVoucher(string code)
+        {
+            return ApplyVoucher(code);
         }
     }
 }
