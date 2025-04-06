@@ -18,7 +18,7 @@
 
     <!-- Product Form Card -->
     <div class="dashboard-card">
-		<form asp-action="Create" method="post" enctype="multipart/form-data">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @Html.AntiForgeryToken()
 
@@ -88,9 +88,13 @@
                     <div class="mb-3">
                         <label class="form-label">Additional Images</label>
                         <div class="input-group">
-                            <input name="imageUrls" type="file" multiple class="form-control" accept="image/*" />
+                            <input id="additionalImages" name="imageUrls" type="file" multiple class="form-control" accept="image/*" onchange="previewImages()" />
                         </div>
                         <small class="text-muted">Up to 5 additional product images</small>
+
+                        <div id="imagePreview" class="mt-2">
+                            <!-- Display selected images here -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -124,16 +128,9 @@
                 <div class="col-md-3 mb-3">
                     <label class="form-label">Available</label>
                     <div class="form-check form-switch mt-2">
-                        <!-- Hidden input để gửi false nếu chưa check -->
-                        <input type="hidden" name="ProductDetail.IsAvailable" value="false" />
-
-                        <!-- Checkbox -->
                         <input type="checkbox" name="ProductDetail.IsAvailable" class="form-check-input" value="true"
                         @(Model?.ProductDetail?.IsAvailable == true ? "checked" : "") />
-
                         <label class="form-check-label">Available for purchase</label>
-
-
                     </div>
                 </div>
             </div>
@@ -160,10 +157,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- Đảm bảo form gửi đến endpoint đúng -->
                 <form id="categoryForm" method="post" action="@Url.Action("CreateCategory", "Product", new { area = "Admin" })">
                     @Html.AntiForgeryToken()
-                    <!-- Category form fields based on Category model -->
                     <div class="mb-3">
                         <label for="categoryName" class="form-label">Category Name</label>
                         <input type="text" class="form-control" id="categoryName" name="Name" maxlength="50" placeholder="Enter category name" required>
@@ -190,7 +185,6 @@
         @TempData["CategorySuccess"]
     </div>
     <script>
-        // Tự động đóng thông báo sau 3 giây
         setTimeout(() => {
             document.querySelector('.alert-success').style.display = 'none';
         }, 3000);
@@ -217,38 +211,32 @@
                 categoryNameInput.classList.remove('is-invalid');
             });
 
-            // Validate category name on input
             categoryNameInput.addEventListener('input', function() {
                 if (this.value.trim()) {
                     this.classList.remove('is-invalid');
                 }
             });
 
-            // Add form submission handler
             categoryForm.addEventListener('submit', function(e) {
                 const categoryName = categoryNameInput.value.trim();
 
                 if (!categoryName) {
-                    e.preventDefault(); // Prevent form submission
+                    e.preventDefault();
                     categoryNameInput.classList.add('is-invalid');
                     return;
                 }
 
                 if (categoryName.length > 50) {
-                    e.preventDefault(); // Prevent form submission
+                    e.preventDefault();
                     categoryNameInput.classList.add('is-invalid');
                     return;
                 }
 
-                // Show loading spinner
                 saveCategoryText.classList.add('d-none');
                 saveCategorySpinner.classList.remove('d-none');
                 document.getElementById('saveCategory').disabled = true;
-
-                // Let the form submit normally to the server
             });
 
-            // Nếu có thông báo thành công, hiển thị và tự động đóng sau 3 giây
             const successAlert = document.querySelector('.alert-success');
             if (successAlert) {
                 setTimeout(() => {
@@ -256,9 +244,67 @@
                 }, 3000);
             }
         });
+
+        // Preview and remove images for Additional Images
+        function previewImages() {
+            const fileInput = document.getElementById('additionalImages');
+            const previewContainer = document.getElementById('imagePreview');
+            const files = fileInput.files;
+
+            // Clear previous previews
+            previewContainer.innerHTML = '';
+
+            // Loop through selected files
+            Array.from(files).forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.classList.add('img-container');
+                    imgContainer.style.position = 'relative';
+
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.classList.add('img-thumbnail', 'me-2');
+                    img.style.width = '100px';
+                    img.style.height = '100px';
+                    img.style.objectFit = 'cover';
+
+                    const closeButton = document.createElement('button');
+                    closeButton.classList.add('btn', 'btn-danger', 'btn-sm');
+                    closeButton.style.position = 'absolute';
+                    closeButton.style.top = '0';
+                    closeButton.style.right = '0';
+                    closeButton.innerHTML = 'X';
+                    closeButton.onclick = function() {
+                        removeImage(index);
+                    };
+
+                    imgContainer.appendChild(img);
+                    imgContainer.appendChild(closeButton);
+                    previewContainer.appendChild(imgContainer);
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function removeImage(index) {
+            const fileInput = document.getElementById('additionalImages');
+            const files = Array.from(fileInput.files);
+            files.splice(index, 1);
+
+            // Update file input with remaining files
+            const dataTransfer = new DataTransfer();
+            files.forEach(file => {
+                dataTransfer.items.add(file);
+            });
+            fileInput.files = dataTransfer.files;
+
+            // Refresh image preview
+            previewImages();
+        }
     </script>
 }
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+@{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
 }
