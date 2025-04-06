@@ -17,16 +17,12 @@ namespace MyWebSite.Repositories
             return await _context.Products.ToListAsync();
         }
 
-        public async Task<Product> GetByIdAsync(string id)
+        public async Task<Product> GetByIdAsync(Guid id)
         {
-            if (Guid.TryParse(id, out var guidId))
-            {
-                return await _context.Products.FindAsync(guidId);
-            }
-            else
-            {
-                return null; // Or throw an exception if you prefer
-            }
+        
+                return await _context.Products.FindAsync(id);
+            
+           
         }
 
 
@@ -43,7 +39,7 @@ namespace MyWebSite.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task DeleteAsync(Guid id)
         {
             var product = await _context.Products.FindAsync(id);
             _context.Products.Remove(product);

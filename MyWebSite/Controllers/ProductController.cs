@@ -26,56 +26,9 @@ namespace MyWebSite.Controllers
             return View(products);
         }
 
-        public async Task<IActionResult> Add()
-        {
-            var categories = await _categoryRepository.GetAllAsync();
-            ViewBag.Categories = new SelectList(categories, "Id", "Name");
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Add(Product product, IFormFile imageUrl, List<IFormFile> imageUrls)
-        {
-            if (ModelState.IsValid)
-            {
-                if (imageUrl != null)
-                {
-                    product.ImageUrl = await SaveImage(imageUrl);
-                }
-
-                if (imageUrls != null && imageUrls.Count > 0)
-                {
-
-                    var imageUrlList = new List<string>();
-                    foreach (var image in imageUrls)
-                    {
-                        imageUrlList.Add(await SaveImage(image));
-                    }
-                    product.ImageUrl = imageUrlList.FirstOrDefault();
-
-                    await _productRepository.AddAsync(product);
-                    return RedirectToAction(nameof(Index));
-                }
-
-                await _productRepository.AddAsync(product);
-                return RedirectToAction("Index");
-            }
-
-            var categories = await _categoryRepository.GetAllAsync();
-            ViewBag.Categories = new SelectList(categories, "Id", "Name");
-            return View(product);
-        }
-
-        private async Task<string> SaveImage(IFormFile image)
-        {
-            var savePath = Path.Combine("wwwroot/images", image.FileName);
-            using (var fileStream = new FileStream(savePath, FileMode.Create))
-            {
-                await image.CopyToAsync(fileStream);
-            }
-            return "/images/" + image.FileName;
-        }
-        public async Task<IActionResult> Display(string id)
+      
+       
+        public async Task<IActionResult> Display(Guid id)
         {
             var product = await _productRepository.GetByIdAsync(id);
             if (product == null)
@@ -84,7 +37,7 @@ namespace MyWebSite.Controllers
             }
             return View(product);
         }
-        public async Task<IActionResult> Update(string id)
+        public async Task<IActionResult> Update(Guid id)
         {
             var product = await _productRepository.GetByIdAsync(id);
             if (product == null)
@@ -113,7 +66,7 @@ namespace MyWebSite.Controllers
         }
 
 
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var product = await _productRepository.GetByIdAsync(id);
             if (product == null)
@@ -125,7 +78,7 @@ namespace MyWebSite.Controllers
 
 
         [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             await _productRepository.DeleteAsync(id);
             return RedirectToAction(nameof(Index));

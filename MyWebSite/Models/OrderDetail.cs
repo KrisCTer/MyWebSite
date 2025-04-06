@@ -8,7 +8,7 @@ namespace MyWebSite.Models
         [Key]
         [ForeignKey("Order")]
         public int OrderId { get; set; }
-        public string ProductId { get; set; }
+        public Guid ProductId { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
         public decimal Discount { get; set; } = 0;

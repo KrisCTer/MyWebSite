@@ -17,7 +17,7 @@
                 Items.Add(item);
             }
         }
-        public void RemoveItem(string productId)
+        public void RemoveItem(Guid productId)
         {
             Items.RemoveAll(i => i.ProductId == productId);
         }
