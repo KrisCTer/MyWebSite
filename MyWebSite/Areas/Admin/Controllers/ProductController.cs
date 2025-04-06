@@ -107,7 +107,7 @@ namespace MyWebSite.Areas.Admin.Controllers
         // GET: Admin/Product/Details/5
         public async Task<IActionResult> Details(Guid id)
         {
-            var product = await _productRepository.GetByIdAsync(id.ToString());
+            var product = await _productRepository.GetByIdAsync(id);
 
             if (product == null)
             {
@@ -125,32 +125,57 @@ namespace MyWebSite.Areas.Admin.Controllers
             return View();
         }
 
-        // POST: Admin/Product/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Product product)
+        public async Task<IActionResult> Create(Product product, IFormFile imageUrl, List<IFormFile> imageUrls)
         {
             if (ModelState.IsValid)
             {
-                product.Id = Guid.NewGuid();
-                product.CreatedAt = DateTime.Now;
-                product.UpdatedAt = DateTime.Now;
+                // Trường hợp chỉ có một hình ảnh chính
 
+                product.ImageUrl = await SaveImage(imageUrl);
+
+                product.ProductDetail.Price = product.Price; // Hoặc giá trị mặc định nếu cần
+
+                // Trường hợp có nhiều hình ảnh
+                if (imageUrls != null && imageUrls.Count > 0)
+                {
+                    var imageUrlList = new List<string>();
+                    foreach (var image in imageUrls)
+                    {
+                        imageUrlList.Add(await SaveImage(image));
+                    }
+                    // Nếu chưa có hình ảnh chính, lấy hình đầu tiên từ danh sách
+                    if (string.IsNullOrEmpty(product.ImageUrl))
+                    {
+                        product.ImageUrl = imageUrlList.FirstOrDefault();
+                    }
+                    // Nên lưu danh sách hình ảnh vào đâu đó trong product
+                    // Ví dụ: product.AdditionalImages = imageUrlList;
+
+                }
+                // Thêm sản phẩm vào cơ sở dữ liệu
                 await _productRepository.AddAsync(product);
-
-                TempData["SuccessMessage"] = "Product created successfully.";
                 return RedirectToAction(nameof(Index));
             }
-
+            // Nếu ModelState không hợp lệ, trả về form với dữ liệu đã nhập
             var categories = await _categoryRepository.GetAllAsync();
-            ViewBag.Categories = new SelectList(categories, "Id", "Name", product.CategoryId);
+            ViewBag.Categories = new SelectList(categories, "Id", "Name");
             return View(product);
         }
 
+        private async Task<string> SaveImage(IFormFile image)
+        {
+            var savePath = Path.Combine("wwwroot/images", image.FileName);
+            using (var fileStream = new FileStream(savePath, FileMode.Create))
+            {
+                await image.CopyToAsync(fileStream);
+            }
+            return "/images/" + image.FileName;
+        }
         // GET: Admin/Product/Edit/5
         public async Task<IActionResult> Edit(Guid id)
         {
-            var product = await _productRepository.GetByIdAsync(id.ToString());
+            var product = await _productRepository.GetByIdAsync(id);
 
             if (product == null)
             {
@@ -203,21 +228,21 @@ namespace MyWebSite.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var product = await _productRepository.GetByIdAsync(id.ToString());
+            var product = await _productRepository.GetByIdAsync(id);
 
             if (product == null)
             {
                 return NotFound();
             }
 
-            await _productRepository.DeleteAsync(id.ToString());
+            await _productRepository.DeleteAsync(id);
             TempData["SuccessMessage"] = "Product deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
 
         private async Task<bool> ProductExists(Guid id)
         {
-            var product = await _productRepository.GetByIdAsync(id.ToString());
+            var product = await _productRepository.GetByIdAsync(id);
             return product != null;
         }
         // Trong AdminController.cs
@@ -236,7 +261,7 @@ namespace MyWebSite.Areas.Admin.Controllers
                     TempData["CategorySuccess"] = $"Category \"{category.Name}\" added successfully!";
 
                     // Redirect về trang Admin/Product/Add
-                    return RedirectToAction("Add", "Product", new { area = "Admin" });
+                    return RedirectToAction("Create", "Product", new { area = "Admin" });
                 }
                 catch (Exception ex)
                 {
@@ -252,7 +277,7 @@ namespace MyWebSite.Areas.Admin.Controllers
             }
 
             // Trở về trang Admin/Product/Add nếu có lỗi
-            return RedirectToAction("Add", "Product", new { area = "Admin" });
+            return RedirectToAction("Create", "Product", new { area = "Admin" });
         }
     }
 }
