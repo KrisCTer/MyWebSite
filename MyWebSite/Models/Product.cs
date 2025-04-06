@@ -20,7 +20,7 @@ namespace MyWebSite.Models
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
         public int? CategoryId { get; set; }
         public Category? Category { get; set; }
-        public List<Review> Reviews { get; set; }
+        public List<Review>? Reviews { get; set; }
         public ProductDetail? ProductDetail { get; set; }
     }
 }

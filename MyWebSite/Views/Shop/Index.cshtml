@@ -129,15 +129,17 @@
                                     {
                                         <small class="text-muted">@product.Category.Name</small>
                                     }
-                                    @if (product.ProductDetail != null && product.ProductDetail.IsAvailable)
+                                    @if (product.ProductDetail != null && product.ProductDetail.IsAvailable == true)
                                     {
                                         <span class="badge bg-success">In Stock</span>
                                     }
-                                    else if (product.ProductDetail != null && !product.ProductDetail.IsAvailable)
+                                    else if (product.ProductDetail != null && product.ProductDetail.IsAvailable == false)
                                     {
                                         <span class="badge bg-secondary">Out of Stock</span>
                                     }
                                 </div>
+                            </div>
+                           
                                 <h5 class="product-title">
                                     <a asp-action="Details" asp-route-id="@product.Id" class="text-decoration-none text-dark">@product.Name</a>
                                 </h5>
@@ -165,7 +167,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                
                 }
             </div>
 

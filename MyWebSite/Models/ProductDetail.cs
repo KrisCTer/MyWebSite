@@ -10,13 +10,13 @@ namespace MyWebSite.Models
         public Guid ProductId { get; set; }
         public string? Color { get; set; }
         public string? Material { get; set; }
-        public int StockCount { get; set; }
-        public decimal Price { get; set; }
+        public int StockCount { get; set; } = 0;
+        public decimal? Price { get; set; }
         public string? Dimensions { get; set; }
         public decimal Discount { get; set; } = 0;
-        public bool IsAvailable { get; set; } = true;
+        public bool? IsAvailable { get; set; } = true;
         public string? Warranty { get; set; }
-        public Product Product { get; set; }
+        public Product? Product { get; set; }
 
     }
 }
