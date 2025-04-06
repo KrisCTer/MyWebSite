@@ -12,8 +12,8 @@ using MyWebSite.Models;
 namespace MyWebSite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250406003413_update_2")]
-    partial class update_2
+    [Migration("20250406023546_InitDatabase")]
+    partial class InitDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
