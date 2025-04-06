@@ -148,7 +148,7 @@
                                         <button class="action-btn" data-bs-toggle="modal" data-bs-target="#editDiscountModal_@discount.Id" title="Chỉnh sửa">
                                             <i class="bi bi-pencil"></i>
                                         </button>
-                                        <form method="post" action="/Admin/Discount/Delete/@discount.Id" style="display: inline;">
+                                        <form asp-area="Admin" asp-controller="DiscountCode" asp-action="Delete" method="post">
                                             <button type="submit" class="action-btn delete" onclick="return confirm('Bạn có chắc chắn muốn xóa mã giảm giá này?');" title="Xóa">
                                                 <i class="bi bi-trash"></i>
                                             </button>
@@ -209,7 +209,7 @@
                                 <div class="modal fade" id="editDiscountModal_@discount.Id" tabindex="-1" aria-labelledby="editDiscountModalLabel_@discount.Id" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
-                                            <form method="post" action="/Admin/Discount/Edit/@discount.Id">
+                                            <form asp-area="Admin" asp-controller="DiscountCode" asp-action="Edit" method="post">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="editDiscountModalLabel_@discount.Id">Chỉnh sửa mã giảm giá</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -265,7 +265,7 @@
 <div class="modal fade" id="addDiscountModal" tabindex="-1" aria-labelledby="addDiscountModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="post" action="/Admin/Discount/Create">
+            <form asp-area="Admin" asp-controller="DiscountCode" asp-action="Create" method="post">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addDiscountModalLabel">Thêm mã giảm giá mới</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
