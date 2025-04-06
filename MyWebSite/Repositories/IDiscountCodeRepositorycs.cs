@@ -1,4 +1,5 @@
-﻿using MyWebSite.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using MyWebSite.Models;
 
 namespace MyWebSite.Repositories
 {
@@ -9,6 +10,8 @@ namespace MyWebSite.Repositories
         Task AddAsync(DiscountCode discountCode);
         Task UpdateAsync(DiscountCode discountCode);
         Task DeleteAsync(int id);
+        Task<int> GetDiscountPercentage(string code);  // Add this method to fetch the discount percentage.
+        Task ApplyVoucher(string code);
         Task<bool> IsValidCode(string code);
         Task<bool> IsCodeExpired(string code);
         Task<bool> IsCodeUsedUp(string code);

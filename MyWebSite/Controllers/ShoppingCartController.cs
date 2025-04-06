@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using MyWebSite.Extensions;
 using MyWebSite.Models;
 using MyWebSite.Repositories;
@@ -17,6 +18,7 @@ namespace MyWebSite.Controllers
         private readonly IProductRepository _productRepository;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IDiscountCodeRepositorycs _discountCodeRepository;
         public ShoppingCartController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IProductRepository productRepository)
         {
             _productRepository = productRepository;
@@ -81,7 +83,7 @@ namespace MyWebSite.Controllers
             order.TotalPrice = cart.Items.Sum(i => i.Price * i.Quantity);
             order.Notes = order.Notes ?? "No notes";
             order.ShippingAddress = order.ShippingAddress ?? "No address";
-            order.Status = "Pending";
+            order.Status = "Pending"; // Trạng thái chưa xác nhận
 
             order.OrderDetails = cart.Items.Select(i => new OrderDetail
             {
@@ -92,9 +94,43 @@ namespace MyWebSite.Controllers
 
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
+
             HttpContext.Session.Remove("Cart");
 
+            // 👉 Sau khi lưu đơn hàng, kiểm tra nếu user đã có tổng đơn > 10 triệu (đã xác nhận)
+            var totalConfirmedAmount = await _context.Orders
+                .Where(o => o.UserId == user.Id && o.Status == "Pending")
+                .SumAsync(o => (decimal?)o.TotalPrice) ?? 0;
+
+            if (totalConfirmedAmount > 10)
+            {
+                var isLoyal = await _context.LoyalCustomers.AnyAsync(lc => lc.UserId == user.Id);
+                if (!isLoyal)
+                {
+                    _context.LoyalCustomers.Add(new LoyalCustomer
+                    {
+                        UserId = user.Id,
+                        JoinedDate = DateTime.Now,
+                        RewardPoints = 0
+                    });
+                    await _context.SaveChangesAsync();
+                }
+            }
+
             return View("OrderCompleted", order.OrderId);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ApplyDiscountCode(string voucherCode)
+        {
+            var isValidCode = await _discountCodeRepository.IsValidCode(voucherCode);
+            if (!isValidCode)
+            {
+                return Json(new { success = false, message = "Invalid voucher code." });
+            }
+
+            // Assuming GetDiscountPercentage returns the discount percentage (e.g., 10% = 0.10)
+            var discountPercentage = await _discountCodeRepository.GetDiscountPercentage(voucherCode);
+            return Json(new { success = true, discountPercentage });
         }
     }
 }
