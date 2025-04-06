@@ -56,6 +56,7 @@ namespace MyWebSite.Areas.Admin.Controllers
             return View(model);
         }
 
+
         // GET: /UserAdmin/Details/{id}
         public async Task<IActionResult> Details(string id)
         {
