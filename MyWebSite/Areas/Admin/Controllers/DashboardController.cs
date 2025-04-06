@@ -60,7 +60,7 @@ namespace MyWebSite.Controllers
                 .CountAsync(u => u.LockoutEnd >= firstDayCurrentMonth);  // Assuming you have a Created field or custom registration date field
 
             viewModel.TotalCustomers = totalCustomers;
-            viewModel.CustomersGrowth = Math.Round((decimal)newCustomers / totalCustomers * 100, 1);
+            viewModel.CustomersGrowth = (totalCustomers > 0) ? Math.Round((decimal)newCustomers / totalCustomers * 100, 1) : 0;
 
             // Get product stats
             viewModel.TotalProducts = await _context.Products.CountAsync();
@@ -72,10 +72,10 @@ namespace MyWebSite.Controllers
             .Include(o => o.ApplicationUser) // Use the correct navigation property
             .OrderByDescending(o => o.OrderDate)
             .Take(5)
-            .Select(o => new OrderViewModel
+            .Select(o => new Order
             {
                 OrderId = o.OrderId, // Use Id instead of OrderId
-                //CustomerName = o.ApplicationUser.FirstName + " " + o.ApplicationUser.LastName, // Use ApplicationUser instead of User
+                UserId = o.UserId, // Use ApplicationUser instead of User
                 OrderDate = o.OrderDate,
                 Amount = o.TotalPrice, // Use TotalPrice instead of Amount
                 Status = o.Status
@@ -88,7 +88,7 @@ namespace MyWebSite.Controllers
             viewModel.TopProducts = await _context.OrderDetails
                 .Include(oi => oi.Product)
                 .GroupBy(oi => new { oi.ProductId, oi.Product.Name, oi.Product.Price })
-                .Select(g => new ProductViewModel
+                .Select(g => new Product
                 {
                     ProductId = g.Key.ProductId,
                     Name = g.Key.Name,
@@ -103,14 +103,14 @@ namespace MyWebSite.Controllers
             viewModel.RecentActivities = await _context.Activities
                 .OrderByDescending(a => a.Timestamp)
                 .Take(10)
-                .Select(a => new ActivitiesViewModel
+                .Select(a => new Activities
                 {
                     ActivityId = a.ActivityId,
                     Type = a.Type,
                     Description = a.Description,
-                    Timestamp = a.Timestamp
-                })
-                .ToListAsync();
+                    Timestamp = a.Timestamp,
+                    UserId = a.UserId,
+                }).ToListAsync();
 
             return View(viewModel);  // Pass view model to Razor view
         }

@@ -28,7 +28,7 @@ namespace MyWebSite.Repositories
 
         public async Task AddAsync(Product product)
         {
-            product.Id = Guid.NewGuid();
+            product.ProductId = Guid.NewGuid();
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
         }
