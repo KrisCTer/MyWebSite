@@ -122,13 +122,16 @@ namespace MyWebSite.Repositories
                 .Where(dc => dc.Code == code)
                 .FirstOrDefaultAsync();
 
-            if (discountCode != null)
+            if (discountCode == null)
             {
-                return discountCode.DiscountPercentage;  // Assuming DiscountPercentage is a property of DiscountCode.
+                Console.WriteLine($"No discount code found for {code}");
+                return 0;
             }
 
-            return 0;  // Return 0 if the code is not found or invalid.
+            Console.WriteLine($"Found discount code: {discountCode.Code}, DiscountPercentage: {discountCode.DiscountPercentage}");
+            return discountCode.DiscountPercentage;
         }
+
 
         Task IDiscountCodeRepositorycs.ApplyVoucher(string code)
         {

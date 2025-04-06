@@ -147,6 +147,8 @@ namespace MyWebSite.Controllers
         [HttpPost]
         public async Task<IActionResult> ApplyDiscountCode(string voucherCode)
         {
+            Console.WriteLine("Voucher Code Received: " + voucherCode); // Kiểm tra xem voucherCode có đúng không
+
             var isValidCode = await _discountCodeRepository.IsValidCode(voucherCode);
             if (!isValidCode)
             {
@@ -154,8 +156,9 @@ namespace MyWebSite.Controllers
             }
 
             var discountPercentage = await _discountCodeRepository.GetDiscountPercentage(voucherCode);
-            
+            Console.WriteLine("Discount Percentage: " + discountPercentage); // Kiểm tra discountPercentage
             return Json(new { success = true, discountPercentage });
         }
+
     }
 }
