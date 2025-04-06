@@ -10,6 +10,7 @@ namespace MyWebSite.Controllers
     public class DashboardController : Controller
     {
         private readonly ApplicationDbContext _context;
+        public List<RecentOrder> RecentOrders { get; set; } = new();
 
         public DashboardController(ApplicationDbContext context)
         {
@@ -69,18 +70,19 @@ namespace MyWebSite.Controllers
 
             // Get recent orders
             viewModel.RecentOrders = await _context.Orders
-            .Include(o => o.ApplicationUser) // Use the correct navigation property
-            .OrderByDescending(o => o.OrderDate)
-            .Take(5)
-            .Select(o => new Order
-            {
-                OrderId = o.OrderId, // Use Id instead of OrderId
-                UserId = o.UserId, // Use ApplicationUser instead of User
-                OrderDate = o.OrderDate,
-                Amount = o.TotalPrice, // Use TotalPrice instead of Amount
-                Status = o.Status
-            })
-            .ToListAsync();
+                .Include(o => o.ApplicationUser)
+                .OrderByDescending(o => o.OrderDate)
+                .Take(5)
+                .Select(o => new RecentOrder
+                {
+                    OrderId = o.OrderId,
+                    CustomerName = o.ApplicationUser.FullName, // Hoặc Email nếu chưa có FullName
+                    OrderDate = o.OrderDate,
+                    Amount = o.TotalPrice,
+                    Status = o.Status
+                })
+                .ToListAsync();
+
 
 
 

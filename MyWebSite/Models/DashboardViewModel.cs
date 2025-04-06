@@ -14,7 +14,7 @@
         public decimal CustomersGrowth { get; set; }
 
         // Recent Data
-        public List<Order> RecentOrders { get; set; }
+        public List<RecentOrder> RecentOrders { get; set; }
         public List<Product> TopProducts { get; set; }
         public List<Activities> RecentActivities { get; set; }
     }
