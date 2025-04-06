@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyWebSite.Extensions;
 using MyWebSite.Models;
@@ -19,15 +18,17 @@ namespace MyWebSite.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IDiscountCodeRepositorycs _discountCodeRepository;
-        public ShoppingCartController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IProductRepository productRepository)
+
+        public ShoppingCartController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IProductRepository productRepository, IDiscountCodeRepositorycs discountCodeRepositorycs)
         {
             _productRepository = productRepository;
             _context = context;
             _userManager = userManager;
+            _discountCodeRepository = discountCodeRepositorycs;
         }
+
         public async Task<IActionResult> AddToCart(Guid productId, int quantity)
         {
-            // Già sứ bạn có phương thức lấy thông tin sản phẩm từ productId
             var product = await GetProductFromDatabase(productId);
 
             var cartItem = new CartItem
@@ -50,10 +51,9 @@ namespace MyWebSite.Controllers
             var cart = HttpContext.Session.GetObjectFromJson<ShoppingCart>("Cart") ?? new ShoppingCart();
             return View(cart);
         }
-        // Các actions khác...
+
         private async Task<Product> GetProductFromDatabase(Guid productId)
         {
-            // Truy vấn có số dữ liệu để lấy thông tin sản phẩm
             var product = await _productRepository.GetByIdAsync(productId);
             return product;
         }
@@ -64,15 +64,15 @@ namespace MyWebSite.Controllers
             if (cart is not null)
             {
                 cart.RemoveItem(productId);
-                // Lưu lại giỏ hàng vào Session sau khi đã xóa mục
                 HttpContext.Session.SetObjectAsJson("Cart", cart);
             }
             return RedirectToAction("Index");
         }
-        public async Task<IActionResult> CheckOut(Order order)
+
+        public async Task<IActionResult> CheckOut(Order order, string voucherCode = null)
         {
             var cart = HttpContext.Session.GetObjectFromJson<ShoppingCart>("Cart");
-            if (cart is null || !cart.Items.Any())
+            if (cart == null || !cart.Items.Any())
             {
                 return RedirectToAction("Index");
             }
@@ -80,10 +80,34 @@ namespace MyWebSite.Controllers
             var user = await _userManager.GetUserAsync(User);
             order.UserId = user.Id;
             order.OrderDate = DateTime.UtcNow;
-            order.TotalPrice = cart.Items.Sum(i => i.Price * i.Quantity);
+
+            // Tính tổng phụ (subtotal) của các mặt hàng trong giỏ hàng
+            decimal subtotal = cart.Items.Sum(i => i.Price * i.Quantity);
+
+            // Kiểm tra và áp dụng mã giảm giá nếu có
+            if (!string.IsNullOrEmpty(voucherCode))
+            {
+                var discountPercentage = await _discountCodeRepository.GetDiscountPercentage(voucherCode);
+                if (discountPercentage > 0)
+                {
+                    var discountAmount = subtotal * discountPercentage;
+                    order.TotalPrice = subtotal - discountAmount;
+                }
+                else
+                {
+                    // Nếu mã giảm giá không hợp lệ, giữ nguyên tổng giá trị
+                    order.TotalPrice = subtotal;
+                }
+            }
+            else
+            {
+                // Nếu không có mã giảm giá, chỉ tính tổng phụ
+                order.TotalPrice = subtotal;
+            }
+
             order.Notes = order.Notes ?? "No notes";
             order.ShippingAddress = order.ShippingAddress ?? "No address";
-            order.Status = "Pending"; // Trạng thái chưa xác nhận
+            order.Status = "Pending";
 
             order.OrderDetails = cart.Items.Select(i => new OrderDetail
             {
@@ -97,7 +121,6 @@ namespace MyWebSite.Controllers
 
             HttpContext.Session.Remove("Cart");
 
-            // 👉 Sau khi lưu đơn hàng, kiểm tra nếu user đã có tổng đơn > 10 triệu (đã xác nhận)
             var totalConfirmedAmount = await _context.Orders
                 .Where(o => o.UserId == user.Id && o.Status == "Pending")
                 .SumAsync(o => (decimal?)o.TotalPrice) ?? 0;
@@ -119,6 +142,8 @@ namespace MyWebSite.Controllers
 
             return View("OrderCompleted", order.OrderId);
         }
+
+
         [HttpPost]
         public async Task<IActionResult> ApplyDiscountCode(string voucherCode)
         {
@@ -128,8 +153,8 @@ namespace MyWebSite.Controllers
                 return Json(new { success = false, message = "Invalid voucher code." });
             }
 
-            // Assuming GetDiscountPercentage returns the discount percentage (e.g., 10% = 0.10)
             var discountPercentage = await _discountCodeRepository.GetDiscountPercentage(voucherCode);
+            
             return Json(new { success = true, discountPercentage });
         }
     }
