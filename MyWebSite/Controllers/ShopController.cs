@@ -104,7 +104,7 @@ namespace MyWebSite.Controllers
                 .Include(p => p.Category)
                 .Include(p => p.ProductDetail)
                 .Include(p => p.Images)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.ProductId == id);
 
             if (product == null)
             {
@@ -113,7 +113,7 @@ namespace MyWebSite.Controllers
 
             // Get related products from the same category
             var relatedProducts = await _context.Products
-                .Where(p => p.CategoryId == product.CategoryId && p.Id != product.Id)
+                .Where(p => p.CategoryId == product.CategoryId && p.ProductId != product.ProductId)
                 .Take(4)
                 .ToListAsync();
 
