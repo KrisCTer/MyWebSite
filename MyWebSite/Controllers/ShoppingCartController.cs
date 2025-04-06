@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,35 +15,80 @@ namespace MyWebSite.Controllers
         private readonly IProductRepository _productRepository;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private const string CartSessionKey = "ShoppingCart";
+
         public ShoppingCartController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IProductRepository productRepository)
         {
             _productRepository = productRepository;
             _context = context;
             _userManager = userManager;
         }
-        public async Task<IActionResult> AddToCart(Guid productId, int quantity)
+        [HttpPost]
+        public IActionResult UpdateQuantity(Guid productId, int quantity)
         {
-            // Già sứ bạn có phương thức lấy thông tin sản phẩm từ productId
-            var product = await GetProductFromDatabase(productId);
+            var cart = HttpContext.Session.GetObjectFromJson<ShoppingCart>(CartSessionKey) ?? new ShoppingCart();
 
-            var cartItem = new CartItem
+            var cartItem = cart.Items.FirstOrDefault(item => item.ProductId == productId);
+            if (cartItem != null)
             {
-                ProductId = productId,
-                Name = product.Name,
-                Price = product.Price,
-                Quantity = quantity
-            };
-            var cart = HttpContext.Session.GetObjectFromJson<ShoppingCart>("Cart") ?? new ShoppingCart();
-            cart.AddItem(cartItem);
+                if (quantity > 0)
+                {
+                    cartItem.Quantity = quantity;
+                }
+                else
+                {
+                    cart.Items.Remove(cartItem);
+                }
 
-            HttpContext.Session.SetObjectAsJson("Cart", cart);
+                HttpContext.Session.SetObjectAsJson(CartSessionKey, cart);
+            }
 
-            return RedirectToAction("Index");
+            return Json(new
+            {
+                success = true,
+                totalItems = cart.TotalItems,
+                totalAmount = cart.TotalAmount,
+                itemSubtotal = cartItem?.Subtotal ?? 0
+            });
         }
+
+        // ADD: An item to cart
+        [HttpPost]
+        public async Task<IActionResult> AddToCart(Guid productId, int quantity = 1)
+        {
+            var product = await GetProductFromDatabase(productId); // Lấy sản phẩm từ cơ sở dữ liệu
+            if (product == null)
+            {
+                return Json(new { success = false, message = "Product not found." });
+            }
+
+            var cart = HttpContext.Session.GetObjectFromJson<ShoppingCart>(CartSessionKey) ?? new ShoppingCart();
+
+            var existingItem = cart.Items.FirstOrDefault(item => item.ProductId == productId);
+            if (existingItem != null)
+            {
+                existingItem.Quantity += quantity;
+            }
+            else
+            {
+                cart.Items.Add(new CartItem
+                {
+                    ProductId = product.Id,
+                    ProductName = product.Name,
+                    Price = product.Price,
+                    Quantity = quantity,
+                });
+            }
+
+            HttpContext.Session.SetObjectAsJson(CartSessionKey, cart);
+
+            return Json(new { success = true, totalItems = cart.TotalItems });
+        }
+
 
         public IActionResult Index()
         {
-            var cart = HttpContext.Session.GetObjectFromJson<ShoppingCart>("Cart") ?? new ShoppingCart();
+            var cart = HttpContext.Session.GetObjectFromJson<ShoppingCart>(CartSessionKey) ?? new ShoppingCart();
             return View(cart);
         }
         // Các actions khác...
@@ -67,6 +110,7 @@ namespace MyWebSite.Controllers
             }
             return RedirectToAction("Index");
         }
+        [HttpPost]
         public async Task<IActionResult> CheckOut(Order order)
         {
             var cart = HttpContext.Session.GetObjectFromJson<ShoppingCart>("Cart");
@@ -79,22 +123,48 @@ namespace MyWebSite.Controllers
             order.UserId = user.Id;
             order.OrderDate = DateTime.UtcNow;
             order.TotalPrice = cart.Items.Sum(i => i.Price * i.Quantity);
+            order.Amount = order.TotalPrice; // Make sure Amount is also set since it's required
             order.Notes = order.Notes ?? "No notes";
             order.ShippingAddress = order.ShippingAddress ?? "No address";
             order.Status = "Pending";
 
-            order.OrderDetails = cart.Items.Select(i => new OrderDetail
-            {
-                ProductId = i.ProductId,
-                Quantity = i.Quantity,
-                Price = i.Price
-            }).ToList();
-
+            // Create the order first
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
-            HttpContext.Session.Remove("Cart");
 
-            return View("OrderCompleted", order.OrderId);
+            // Now create order details with the generated OrderId
+            foreach (var item in cart.Items)
+            {
+                var orderDetail = new OrderDetail
+                {
+                    OrderId = order.OrderId, // Use the generated OrderId
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity,
+                    Price = item.Price * item.Quantity
+                };
+                _context.OrderDetails.Add(orderDetail);
+            }
+
+            await _context.SaveChangesAsync();
+
+            HttpContext.Session.Remove("Cart");
+            return View("CheckOut", order);
         }
+        // Hiển thị form Checkout
+        [HttpGet]
+        public IActionResult CheckOut()
+        {
+            var cart = HttpContext.Session.GetObjectFromJson<ShoppingCart>("Cart");
+            if (cart == null || !cart.Items.Any())
+            {
+                return RedirectToAction("Index");
+            }
+
+            var order = new Order();
+            
+            order.Amount = cart.Items.Sum(i => i.Price * i.Quantity); // để binding vào view
+            return View(order); // view Checkout.cshtml
+        }
+
     }
 }
