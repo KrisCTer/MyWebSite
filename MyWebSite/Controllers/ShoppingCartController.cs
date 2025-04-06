@@ -142,23 +142,23 @@ namespace MyWebSite.Controllers
 
             return View("OrderCompleted", order.OrderId);
         }
-
-
         [HttpPost]
-        public async Task<IActionResult> ApplyDiscountCode(string voucherCode)
+        public async Task<IActionResult> ApplyDiscountCode([FromBody] VoucherCodeRequest request)
         {
-            Console.WriteLine("Voucher Code Received: " + voucherCode); // Kiểm tra xem voucherCode có đúng không
-
-            var isValidCode = await _discountCodeRepository.IsValidCode(voucherCode);
+            var isValidCode = await _discountCodeRepository.IsValidCode(request.VoucherCode);
             if (!isValidCode)
             {
                 return Json(new { success = false, message = "Invalid voucher code." });
             }
 
-            var discountPercentage = await _discountCodeRepository.GetDiscountPercentage(voucherCode);
-            Console.WriteLine("Discount Percentage: " + discountPercentage); // Kiểm tra discountPercentage
+            var discountPercentage = await _discountCodeRepository.GetDiscountPercentage(request.VoucherCode);
             return Json(new { success = true, discountPercentage });
         }
 
+        // Định nghĩa lớp để nhận dữ liệu voucherCode từ FE
+        public class VoucherCodeRequest
+        {
+            public string VoucherCode { get; set; }
+        }
     }
 }
