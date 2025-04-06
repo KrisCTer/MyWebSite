@@ -52,7 +52,7 @@ namespace MyWebSite.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(Guid id, Product product)
         {
-            if (id != product.Id)
+            if (id != product.ProductId)
             {
                 return NotFound();
             }

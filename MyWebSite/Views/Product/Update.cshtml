@@ -22,7 +22,7 @@
         <div class="col-lg-7">
             <form asp-action="Update" method="post" enctype="multipart/form-data">
                 <div class="bg-white rounded-4 shadow-sm p-5 mb-5">
-                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="ProductId" />
 
                     <div class="mb-4">
                         <label asp-for="Name" class="form-label" style="font-size: 14px; color: #86868b;">Product Name</label>
@@ -113,7 +113,7 @@
                         Update Product
                     </button>
                     <div class="d-flex gap-3">
-                        <a asp-action="Display" asp-route-id="@Model.Id" class="btn btn-lg py-3 fw-normal flex-grow-1 text-decoration-none" style="background-color: #F5F5F7; color: #1d1d1f; border-radius: 12px; border: none;">
+                        <a asp-action="Display" asp-route-id="@Model.ProductId" class="btn btn-lg py-3 fw-normal flex-grow-1 text-decoration-none" style="background-color: #F5F5F7; color: #1d1d1f; border-radius: 12px; border: none;">
                             View Product
                         </a>
                         <a asp-action="Index" class="btn btn-lg py-3 fw-normal flex-grow-1 text-decoration-none" style="background-color: #F5F5F7; color: #1d1d1f; border-radius: 12px; border: none;">

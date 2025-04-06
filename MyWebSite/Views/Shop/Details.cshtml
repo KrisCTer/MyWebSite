@@ -117,8 +117,8 @@
 
                 Operator '&&' cannot be applied to operands of type 'bool' and 'bool?'
                 <div class="d-flex">
-                    <a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-productId="@Model.Id" asp-route-quantity="1">
-                        <button class="btn btn-primary me-2" id="add-to-cart" data-id="@Model.Id">
+                    <a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-productId="@Model.ProductId" asp-route-quantity="1">
+                        <button class="btn btn-primary me-2" id="add-to-cart" data-id="@Model.ProductId">
                             <i class="bi bi-bag-plus me-2"></i>Add to Cart
                         </button>
                     </a>
@@ -303,7 +303,7 @@
                     <div class="col-md-3 mb-4">
                         <div class="product-card">
                             <div class="position-relative">
-                                <a asp-action="Details" asp-route-id="@relatedProduct.Id">
+                                <a asp-action="Details" asp-route-id="@relatedProduct.ProductId">
                                     @if (!string.IsNullOrEmpty(relatedProduct.ImageUrl))
                                     {
                                         <img src="@relatedProduct.ImageUrl" alt="@relatedProduct.Name" class="img-fluid">
@@ -340,7 +340,7 @@
                                     }
                                 </div>
                                 <h5 class="product-title">
-                                    <a asp-action="Details" asp-route-id="@relatedProduct.Id" class="text-decoration-none text-dark">@relatedProduct.Name</a>
+                                    <a asp-action="Details" asp-route-id="@relatedProduct.ProductId" class="text-decoration-none text-dark">@relatedProduct.Name</a>
                                 </h5>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="product-price">
