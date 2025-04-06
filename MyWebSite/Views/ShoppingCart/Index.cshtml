@@ -140,9 +140,9 @@
             .then(data => {
                 if (data.success) {
                     // Calculate discount and update total
-                    var subtotal = @Model.Items.Sum(i => i.Price * i.Quantity);
+                  var beforeTotal = @Model.Items.Sum(i => i.Price * i.Quantity);
                     var discount = data.discountPercentage;
-                    var total = subtotal - (subtotal * discount);
+					var total = beforeTotal - (beforeTotal * (discount / 100));
 
                     // Update the total and subtotal
                     document.getElementById("total").innerText = total.toFixed(2);
