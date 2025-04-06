@@ -612,10 +612,14 @@ namespace MyWebSite.Migrations
             modelBuilder.Entity("MyWebSite.Models.UserDiscountCode", b =>
                 {
                     b.Property<string>("UserId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("DiscountCodeId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("UsedDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("UserId", "DiscountCodeId");
 

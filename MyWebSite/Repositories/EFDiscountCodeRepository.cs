@@ -37,6 +37,11 @@ namespace MyWebSite.Repositories
         {
             return await _context.discountCodes.ToListAsync();
         }
+        public async Task<DiscountCode> GetByCodeAsync(string code)
+        {
+            return await _context.discountCodes
+                .FirstOrDefaultAsync(d => d.Code == code);
+        }
 
         // Lấy mã giảm giá theo ID
         public async Task<DiscountCode> GetByIdAsync(int id)

@@ -12,8 +12,8 @@ using MyWebSite.Models;
 namespace MyWebSite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250406162447_create")]
-    partial class create
+    [Migration("20250406184645_InitDatabase")]
+    partial class InitDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -615,10 +615,14 @@ namespace MyWebSite.Migrations
             modelBuilder.Entity("MyWebSite.Models.UserDiscountCode", b =>
                 {
                     b.Property<string>("UserId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("DiscountCodeId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("UsedDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("UserId", "DiscountCodeId");
 
