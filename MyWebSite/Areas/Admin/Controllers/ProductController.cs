@@ -14,10 +14,12 @@ namespace MyWebSite.Areas.Admin.Controllers
     {
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly ApplicationDbContext _context;
         private readonly int _pageSize = 10;
 
-        public ProductController(IProductRepository productRepository, ICategoryRepository categoryRepository)
+        public ProductController(ApplicationDbContext context,IProductRepository productRepository, ICategoryRepository categoryRepository)
         {
+            _context = context;
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
         }
@@ -107,8 +109,10 @@ namespace MyWebSite.Areas.Admin.Controllers
         // GET: Admin/Product/Details/5
         public async Task<IActionResult> Details(Guid id)
         {
-            var product = await _productRepository.GetByIdAsync(id);
-
+            var product = await _context.Products
+                .Include(p => p.ProductDetail)
+                .Include(p => p.Category)
+                .FirstOrDefaultAsync(p => p.ProductId == id);
             if (product == null)
             {
                 return NotFound();
@@ -134,9 +138,7 @@ namespace MyWebSite.Areas.Admin.Controllers
 
                 product.ImageUrl = await SaveImage(imageUrl);
 
-                product.ProductDetail.Price = product.Price; // Hoặc giá trị mặc định nếu cần
-
-                // Trường hợp có nhiều hình ảnh
+                product.ProductDetail.Price = product.Price;
                 if (imageUrls != null && imageUrls.Count > 0)
                 {
                     var imageUrlList = new List<string>();
@@ -173,26 +175,32 @@ namespace MyWebSite.Areas.Admin.Controllers
             return "/images/" + image.FileName;
         }
         // GET: Admin/Product/Edit/5
+        // Admin/ProductController.cs
         public async Task<IActionResult> Edit(Guid id)
         {
-            var product = await _productRepository.GetByIdAsync(id);
+            var product = await _context.Products
+                .Include(p => p.ProductDetail)  // Bao gồm ProductDetail nếu cần
+                .Include(p => p.Category)       // Bao gồm Category nếu cần
+                .FirstOrDefaultAsync(p => p.ProductId == id);
 
             if (product == null)
             {
                 return NotFound();
             }
 
-            var categories = await _categoryRepository.GetAllAsync();
-            ViewBag.Categories = new SelectList(categories, "Id", "Name", product.CategoryId);
+            // Load các danh mục để chọn
+            ViewBag.Categories = await _context.Categories.ToListAsync();
+
             return View(product);
         }
+
 
         // POST: Admin/Product/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, Product product)
         {
-            if (id != product.Id)
+            if (id != product.ProductId)
             {
                 return NotFound();
             }
@@ -279,5 +287,22 @@ namespace MyWebSite.Areas.Admin.Controllers
             // Trở về trang Admin/Product/Add nếu có lỗi
             return RedirectToAction("Create", "Product", new { area = "Admin" });
         }
+        [HttpPost]
+        public async Task<IActionResult> UpdateStock(Guid id, int stockQuantity, int lowStockThreshold)
+        {
+            var product = await _productRepository.GetByIdAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            product.StockQuantity = stockQuantity;
+            product.LowStockThreshold = lowStockThreshold;
+
+            await _productRepository.UpdateAsync(product);
+
+            return RedirectToAction("Display", new { id = id });
+        }
+
     }
 }

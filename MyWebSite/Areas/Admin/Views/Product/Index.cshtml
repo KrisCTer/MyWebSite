@@ -243,14 +243,14 @@
                             </td>
                             <td>@product.CreatedAt.ToString("MMM dd, yyyy")</td>
                             <td>
-                                <a asp-area="Admin" asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="action-btn">
+                                <a asp-area="Admin" asp-controller="Product" asp-action="Details" asp-route-id="@product.ProductId" class="action-btn">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a asp-area="Admin" asp-controller="Product" asp-action="Edit" asp-route-id="@product.Id" class="action-btn">
+                                <a asp-area="Admin" asp-controller="Product" asp-action="Edit" asp-route-id="@product.ProductId" class="action-btn">
                                     <i class="bi bi-pencil"></i>
                                 </a>
                                 <button class="action-btn delete" data-bs-toggle="modal" data-bs-target="#deleteProductModal"
-                                        data-id="@product.Id" data-name="@product.Name">
+                                        data-id="@product.ProductId" data-name="@product.Name">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </td>
