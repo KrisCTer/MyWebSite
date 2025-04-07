@@ -2,350 +2,350 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
-    ViewData["Title"] = "Mã Giảm Giá";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+	ViewData["Title"] = "Discount Codes";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <div class="container-fluid">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h2 class="fw-bold mb-3">Quản lý mã giảm giá</h2>
-            <p class="text-muted">Quản lý tất cả mã giảm giá cho cửa hàng ModernHome.</p>
-        </div>
-    </div>
+	<div class="row mb-4">
+		<div class="col-12">
+			<h2 class="fw-bold mb-3">Discount Code Management</h2>
+			<p class="text-muted">Manage all discount codes for ModernHome store.</p>
+		</div>
+	</div>
 
-    <!-- Stats Cards -->
-    <div class="row g-3 mb-4">
-        <div class="col-md-6 col-lg-3">
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <div class="card-icon bg-primary">
-                        <i class="bi bi-ticket-perforated"></i>
-                    </div>
-                    <h5 class="card-title">Tổng số mã giảm giá</h5>
-                </div>
-                @* <h3 class="card-value">@Model.Count</h3> *@
-                <p class="card-label">
-                    <span class="text-muted">Tất cả mã giảm giá</span>
-                </p>
-            </div>
-        </div>
+	<!-- Stats Cards -->
+	<div class="row g-3 mb-4">
+		<div class="col-md-6 col-lg-3">
+			<div class="dashboard-card">
+				<div class="card-header">
+					<div class="card-icon bg-primary">
+						<i class="bi bi-ticket-perforated"></i>
+					</div>
+					<h5 class="card-title">Total Discount Codes</h5>
+				</div>
+				<h3 class="card-value">@Model.Count()</h3>
+				<p class="card-label">
+					<span class="text-muted">All discount codes</span>
+				</p>
+			</div>
+		</div>
 
-        <div class="col-md-6 col-lg-3">
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <div class="card-icon bg-success">
-                        <i class="bi bi-check-circle"></i>
-                    </div>
-                    <h5 class="card-title">Mã giảm giá đang hoạt động</h5>
-                </div>
-                <h3 class="card-value">@Model.Count(d => d.Status && d.ValidTo >= DateTime.Now)</h3>
-                <p class="card-label">
-                    <span class="text-success">Đang có hiệu lực</span>
-                </p>
-            </div>
-        </div>
+		<div class="col-md-6 col-lg-3">
+			<div class="dashboard-card">
+				<div class="card-header">
+					<div class="card-icon bg-success">
+						<i class="bi bi-check-circle"></i>
+					</div>
+					<h5 class="card-title">Active Discount Codes</h5>
+				</div>
+				<h3 class="card-value">@Model.Count(d => d.Status && d.ValidTo >= DateTime.Now)</h3>
+				<p class="card-label">
+					<span class="text-success">Currently active</span>
+				</p>
+			</div>
+		</div>
 
-        <div class="col-md-6 col-lg-3">
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <div class="card-icon bg-warning">
-                        <i class="bi bi-hourglass-split"></i>
-                    </div>
-                    <h5 class="card-title">Sắp hết hạn</h5>
-                </div>
-                <h3 class="card-value">@Model.Count(d => d.Status && d.ValidTo >= DateTime.Now && d.ValidTo <= DateTime.Now.AddDays(7))</h3>
-                <p class="card-label">
-                    <span class="text-warning">Hết hạn trong 7 ngày tới</span>
-                </p>
-            </div>
-        </div>
+		<div class="col-md-6 col-lg-3">
+			<div class="dashboard-card">
+				<div class="card-header">
+					<div class="card-icon bg-warning">
+						<i class="bi bi-hourglass-split"></i>
+					</div>
+					<h5 class="card-title">Expiring Soon</h5>
+				</div>
+				<h3 class="card-value">@Model.Count(d => d.Status && d.ValidTo >= DateTime.Now && d.ValidTo <= DateTime.Now.AddDays(7))</h3>
+				<p class="card-label">
+					<span class="text-warning">Expires in the next 7 days</span>
+				</p>
+			</div>
+		</div>
 
-        <div class="col-md-6 col-lg-3">
-            <div class="dashboard-card">
-                <div class="card-header">
-                    <div class="card-icon bg-danger">
-                        <i class="bi bi-x-circle"></i>
-                    </div>
-                    <h5 class="card-title">Mã hết hạn</h5>
-                </div>
-                <h3 class="card-value">@Model.Count(d => !d.Status || d.ValidTo < DateTime.Now)</h3>
-                <p class="card-label">
-                    <span class="text-danger">Đã hết hạn hoặc vô hiệu hóa</span>
-                </p>
-            </div>
-        </div>
-    </div>
+		<div class="col-md-6 col-lg-3">
+			<div class="dashboard-card">
+				<div class="card-header">
+					<div class="card-icon bg-danger">
+						<i class="bi bi-x-circle"></i>
+					</div>
+					<h5 class="card-title">Expired Discount Codes</h5>
+				</div>
+				<h3 class="card-value">@Model.Count(d => !d.Status || d.ValidTo < DateTime.Now)</h3>
+				<p class="card-label">
+					<span class="text-danger">Expired or disabled</span>
+				</p>
+			</div>
+		</div>
+	</div>
 
-    <!-- Discount List -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="dashboard-card">
-                <div class="card-header mb-3">
-                    <h5 class="card-title">Danh sách mã giảm giá</h5>
-                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addDiscountModal">
-                        <i class="bi bi-plus-lg"></i> Thêm mã giảm giá
-                    </button>
-                </div>
-                <div class="table-responsive admin-table">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Mã giảm giá</th>
-                                <th>Phần trăm</th>
-                                <th>Giới hạn sử dụng</th>
-                                <th>Đã sử dụng</th>
-                                <th>Ngày bắt đầu</th>
-                                <th>Ngày kết thúc</th>
-                                <th>Trạng thái</th>
-                                <th>Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var discount in Model)
-                            {
-                                <tr>
-                                    <td>@discount.Id</td>
-                                    <td>@discount.Code</td>
-                                    <td>@discount.DiscountPercentage%</td>
-                                    <td>@discount.MaxUsage</td>
-                                    <td>@discount.UsageCount</td>
-                                    <td>@discount.ValidFrom.ToString("dd/MM/yyyy")</td>
-                                    <td>@discount.ValidTo.ToString("dd/MM/yyyy")</td>
-                                    <td>
-                                        @{
-                                            string statusClass;
-                                            string statusText;
 
-                                            if (!discount.Status)
-                                            {
-                                                statusClass = "status-cancelled";
-                                                statusText = "Vô hiệu hóa";
-                                            }
-                                            else if (discount.ValidTo < DateTime.Now)
-                                            {
-                                                statusClass = "status-cancelled";
-                                                statusText = "Hết hạn";
-                                            }
-                                            else if (discount.ValidFrom > DateTime.Now)
-                                            {
-                                                statusClass = "status-pending";
-                                                statusText = "Chưa bắt đầu";
-                                            }
-                                            else
-                                            {
-                                                statusClass = "status-completed";
-                                                statusText = "Đang hoạt động";
-                                            }
-                                        }
-                                        <span class="status-badge @statusClass">@statusText</span>
-                                    </td>
-                                    <td>
-                                        <button class="action-btn" data-bs-toggle="modal" data-bs-target="#viewDiscountModal_@discount.Id" title="Xem chi tiết">
-                                            <i class="bi bi-eye"></i>
-                                        </button>
-                                        <button class="action-btn" data-bs-toggle="modal" data-bs-target="#editDiscountModal_@discount.Id" title="Chỉnh sửa">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <form asp-area="Admin" asp-controller="DiscountCode" asp-action="Delete" method="post">
-                                            <button type="submit" class="action-btn delete" onclick="return confirm('Bạn có chắc chắn muốn xóa mã giảm giá này?');" title="Xóa">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
 
-                                <!-- View Discount Modal -->
-                                <div class="modal fade" id="viewDiscountModal_@discount.Id" tabindex="-1" aria-labelledby="viewDiscountModalLabel_@discount.Id" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="viewDiscountModalLabel_@discount.Id">Chi tiết mã giảm giá</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="mb-3">
-                                                    <label class="form-label">ID:</label>
-                                                    <p>@discount.Id</p>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Mã giảm giá:</label>
-                                                    <p>@discount.Code</p>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Phần trăm giảm giá:</label>
-                                                    <p>@discount.DiscountPercentage%</p>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Giới hạn sử dụng:</label>
-                                                    <p>@discount.MaxUsage</p>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Đã sử dụng:</label>
-                                                    <p>@discount.UsageCount</p>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Ngày bắt đầu:</label>
-                                                    <p>@discount.ValidFrom.ToString("dd/MM/yyyy")</p>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Ngày kết thúc:</label>
-                                                    <p>@discount.ValidTo.ToString("dd/MM/yyyy")</p>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Trạng thái:</label>
-                                                    <p>@(discount.Status ? "Hoạt động" : "Vô hiệu hóa")</p>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+	<!-- Discount List -->
 
-                                <!-- Edit Discount Modal -->
-                                <div class="modal fade" id="editDiscountModal_@discount.Id" tabindex="-1" aria-labelledby="editDiscountModalLabel_@discount.Id" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <form asp-area="Admin" asp-controller="DiscountCode" asp-action="Edit" method="post">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="editDiscountModalLabel_@discount.Id">Chỉnh sửa mã giảm giá</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="mb-3">
-                                                        <label for="editCode_@discount.Id" class="form-label">Mã giảm giá</label>
-                                                        <input type="text" class="form-control" id="editCode_@discount.Id" name="Code" value="@discount.Code" required>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="editDiscountPercentage_@discount.Id" class="form-label">Phần trăm giảm giá</label>
-                                                        <input type="number" class="form-control" id="editDiscountPercentage_@discount.Id" name="DiscountPercentage" min="1" max="100" value="@discount.DiscountPercentage" required>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="editMaxUsage_@discount.Id" class="form-label">Giới hạn sử dụng</label>
-                                                        <input type="number" class="form-control" id="editMaxUsage_@discount.Id" name="MaxUsage" min="1" value="@discount.MaxUsage" required>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="editUsageCount_@discount.Id" class="form-label">Số lần đã sử dụng</label>
-                                                        <input type="number" class="form-control" id="editUsageCount_@discount.Id" name="UsageCount" min="0" value="@discount.UsageCount" required>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="editValidFrom_@discount.Id" class="form-label">Ngày bắt đầu</label>
-                                                        <input type="date" class="form-control" id="editValidFrom_@discount.Id" name="ValidFrom" value="@discount.ValidFrom.ToString("yyyy-MM-dd")" required>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label for="editValidTo_@discount.Id" class="form-label">Ngày kết thúc</label>
-                                                        <input type="date" class="form-control" id="editValidTo_@discount.Id" name="ValidTo" value="@discount.ValidTo.ToString("yyyy-MM-dd")" required>
-                                                    </div>
-                                                    <div class="mb-3 form-check">
-                                                        <input type="checkbox" class="form-check-input" id="editStatus_@discount.Id" name="Status" value="true" @(discount.Status ? "checked" : "")>
-                                                        <label class="form-check-label" for="editStatus_@discount.Id">Hoạt động</label>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="row mb-4">
+		<div class="col-12">
+			<div class="dashboard-card">
+				<div class="card-header mb-3">
+					<h5 class="card-title">Discount Code List</h5>
+					<button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addDiscountModal">
+						<i class="bi bi-plus-lg"></i> Add Discount Code
+					</button>
+				</div>
+				<div class="table-responsive admin-table">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Discount Code</th>
+								<th>Percentage</th>
+								<th>Usage Limit</th>
+								<th>Used Count</th>
+								<th>Start Date</th>
+								<th>End Date</th>
+								<th>Status</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var discount in Model)
+							{
+								<tr>
+									<td>@discount.Id</td>
+									<td>@discount.Code</td>
+									<td>@discount.DiscountPercentage%</td>
+									<td>@discount.MaxUsage</td>
+									<td>@discount.UsageCount</td>
+									<td>@discount.ValidFrom.ToString("dd/MM/yyyy")</td>
+									<td>@discount.ValidTo.ToString("dd/MM/yyyy")</td>
+									<td>
+										@{
+											string statusClass;
+											string statusText;
+											if (!discount.Status)
+											{
+												statusClass = "status-cancelled";
+												statusText = "Disabled";
+											}
+											else if (discount.ValidTo < DateTime.Now)
+											{
+												statusClass = "status-cancelled";
+												statusText = "Expired";
+											}
+											else if (discount.ValidFrom > DateTime.Now)
+											{
+												statusClass = "status-pending";
+												statusText = "Not started yet";
+											}
+											else
+											{
+												statusClass = "status-completed";
+												statusText = "Active";
+											}
+										}
+										<span class="status-badge @statusClass">@statusText</span>
+									</td>
+									<td>
+										<button class="action-btn" data-bs-toggle="modal" data-bs-target="#viewDiscountModal_@discount.Id" title="View Details">
+											<i class="bi bi-eye"></i>
+										</button>
+										<button class="action-btn" data-bs-toggle="modal" data-bs-target="#editDiscountModal_@discount.Id" title="Edit">
+											<i class="bi bi-pencil"></i>
+										</button>
+										<form asp-area="Admin" asp-controller="DiscountCode" asp-action="Delete" method="post">
+											<button type="submit" class="action-btn delete" onclick="return confirm('Are you sure you want to delete this discount code?');" title="Delete">
+												<i class="bi bi-trash"></i>
+											</button>
+										</form>
+									</td>
+								</tr>
+
+								<!-- View Discount Modal -->
+								<div class="modal fade" id="viewDiscountModal_@discount.Id" tabindex="-1" aria-labelledby="viewDiscountModalLabel_@discount.Id" aria-hidden="true">
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h5 class="modal-title" id="viewDiscountModalLabel_@discount.Id">Discount Code Details</h5>
+												<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+											</div>
+											<div class="modal-body">
+												<div class="mb-3">
+													<label class="form-label">ID:</label>
+													<p>@discount.Id</p>
+												</div>
+												<div class="mb-3">
+													<label class="form-label">Discount Code:</label>
+													<p>@discount.Code</p>
+												</div>
+												<div class="mb-3">
+													<label class="form-label">Discount Percentage:</label>
+													<p>@discount.DiscountPercentage%</p>
+												</div>
+												<div class="mb-3">
+													<label class="form-label">Usage Limit:</label>
+													<p>@discount.MaxUsage</p>
+												</div>
+												<div class="mb-3">
+													<label class="form-label">Used Count:</label>
+													<p>@discount.UsageCount</p>
+												</div>
+												<div class="mb-3">
+													<label class="form-label">Start Date:</label>
+													<p>@discount.ValidFrom.ToString("dd/MM/yyyy")</p>
+												</div>
+												<div class="mb-3">
+													<label class="form-label">End Date:</label>
+													<p>@discount.ValidTo.ToString("dd/MM/yyyy")</p>
+												</div>
+												<div class="mb-3">
+													<label class="form-label">Status:</label>
+													<p>@(discount.Status ? "Active" : "Disabled")</p>
+												</div>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!-- Edit Discount Modal -->
+								<div class="modal fade" id="editDiscountModal_@discount.Id" tabindex="-1" aria-labelledby="editDiscountModalLabel_@discount.Id" aria-hidden="true">
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<form asp-area="Admin" asp-controller="DiscountCode" asp-action="Edit" method="post">
+												<div class="modal-header">
+													<h5 class="modal-title" id="editDiscountModalLabel_@discount.Id">Edit Discount Code</h5>
+													<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+												</div>
+												<div class="modal-body">
+													<div class="mb-3">
+														<label for="editCode_@discount.Id" class="form-label">Discount Code</label>
+														<input type="text" class="form-control" id="editCode_@discount.Id" name="Code" value="@discount.Code" required>
+													</div>
+													<div class="mb-3">
+														<label for="editDiscountPercentage_@discount.Id" class="form-label">Discount Percentage</label>
+														<input type="number" class="form-control" id="editDiscountPercentage_@discount.Id" name="DiscountPercentage" min="1" max="100" value="@discount.DiscountPercentage" required>
+													</div>
+													<div class="mb-3">
+														<label for="editMaxUsage_@discount.Id" class="form-label">Usage Limit</label>
+														<input type="number" class="form-control" id="editMaxUsage_@discount.Id" name="MaxUsage" min="1" value="@discount.MaxUsage" required>
+													</div>
+													<div class="mb-3">
+														<label for="editUsageCount_@discount.Id" class="form-label">Used Count</label>
+														<input type="number" class="form-control" id="editUsageCount_@discount.Id" name="UsageCount" min="0" value="@discount.UsageCount" required>
+													</div>
+													<div class="mb-3">
+														<label for="editValidFrom_@discount.Id" class="form-label">Start Date</label>
+														<input type="date" class="form-control" id="editValidFrom_@discount.Id" name="ValidFrom" value="@discount.ValidFrom.ToString("yyyy-MM-dd")" required>
+													</div>
+													<div class="mb-3">
+														<label for="editValidTo_@discount.Id" class="form-label">End Date</label>
+														<input type="date" class="form-control" id="editValidTo_@discount.Id" name="ValidTo" value="@discount.ValidTo.ToString("yyyy-MM-dd")" required>
+													</div>
+													<div class="mb-3 form-check">
+														<input type="checkbox" class="form-check-input" id="editStatus_@discount.Id" name="Status" value="true" @(discount.Status ? "checked" : "")>
+														<label class="form-check-label" for="editStatus_@discount.Id">Active</label>
+													</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+													<button type="submit" class="btn btn-primary">Save Changes</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-
 <!-- Add Discount Modal -->
 <div class="modal fade" id="addDiscountModal" tabindex="-1" aria-labelledby="addDiscountModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form asp-area="Admin" asp-controller="DiscountCode" asp-action="Create" method="post">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addDiscountModalLabel">Thêm mã giảm giá mới</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="newCode" class="form-label">Mã giảm giá</label>
-                        <input type="text" class="form-control" id="newCode" name="Code" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="newDiscountPercentage" class="form-label">Phần trăm giảm giá</label>
-                        <input type="number" class="form-control" id="newDiscountPercentage" name="DiscountPercentage" min="1" max="100" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="newMaxUsage" class="form-label">Giới hạn sử dụng</label>
-                        <input type="number" class="form-control" id="newMaxUsage" name="MaxUsage" min="1" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="newValidFrom" class="form-label">Ngày bắt đầu</label>
-                        <input type="date" class="form-control" id="newValidFrom" name="ValidFrom" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="newValidTo" class="form-label">Ngày kết thúc</label>
-                        <input type="date" class="form-control" id="newValidTo" name="ValidTo" required>
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="newStatus" name="Status" value="true" checked>
-                        <label class="form-check-label" for="newStatus">Hoạt động</label>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" class="btn btn-primary">Tạo mã giảm giá</button>
-                </div>
-            </form>
-        </div>
-    </div>
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form asp-area="Admin" asp-controller="DiscountCode" asp-action="Create" method="post">
+				<div class="modal-header">
+					<h5 class="modal-title" id="addDiscountModalLabel">Add New Discount Code</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="mb-3">
+						<label for="newCode" class="form-label">Discount Code</label>
+						<input type="text" class="form-control" id="newCode" name="Code" required>
+					</div>
+					<div class="mb-3">
+						<label for="newDiscountPercentage" class="form-label">Discount Percentage</label>
+						<input type="number" class="form-control" id="newDiscountPercentage" name="DiscountPercentage" min="1" max="100" required>
+					</div>
+					<div class="mb-3">
+						<label for="newMaxUsage" class="form-label">Usage Limit</label>
+						<input type="number" class="form-control" id="newMaxUsage" name="MaxUsage" min="1" required>
+					</div>
+					<div class="mb-3">
+						<label for="newValidFrom" class="form-label">Start Date</label>
+						<input type="date" class="form-control" id="newValidFrom" name="ValidFrom" required>
+					</div>
+					<div class="mb-3">
+						<label for="newValidTo" class="form-label">End Date</label>
+						<input type="date" class="form-control" id="newValidTo" name="ValidTo" required>
+					</div>
+					<div class="mb-3 form-check">
+						<input type="checkbox" class="form-check-input" id="newStatus" name="Status" value="true" checked>
+						<label class="form-check-label" for="newStatus">Active</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+					<button type="submit" class="btn btn-primary">Create Discount Code</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
-
 @section Scripts {
-    <script>
-        // Validate date inputs on the "Add Discount" form
-        document.addEventListener('DOMContentLoaded', function () {
-            // For new discount form
-            document.getElementById('newValidFrom').addEventListener('change', function() {
-                document.getElementById('newValidTo').min = this.value;
-            });
+	<script>
+		// Validate date inputs on the "Add Discount" form
+		document.addEventListener('DOMContentLoaded', function () {
+			// For new discount form
+			document.getElementById('newValidFrom').addEventListener('change', function() {
+				document.getElementById('newValidTo').min = this.value;
+			});
 
-            // Set today as minimum date for ValidFrom
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('newValidFrom').min = today;
+			// Set today as minimum date for ValidFrom
+			const today = new Date().toISOString().split('T')[0];
+			document.getElementById('newValidFrom').min = today;
 
-            // For edit forms
-            document.querySelectorAll('[id^="editValidFrom_"]').forEach(function(input) {
-                input.addEventListener('change', function() {
-                    const id = this.id.split('_')[1];
-                    document.getElementById(`editValidTo_${id}`).min = this.value;
-                });
-            });
-        });
+			// For edit forms
+			document.querySelectorAll('[id^="editValidFrom_"]').forEach(function(input) {
+				input.addEventListener('change', function() {
+					const id = this.id.split('_')[1];
+					document.getElementById(`editValidTo_${id}`).min = this.value;
+				});
+			});
+		});
 
-        // Generate random discount code
-        function generateRandomCode() {
-            const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-            let result = '';
-            for (let i = 0; i < 8; i++) {
-                result += characters.charAt(Math.floor(Math.random() * characters.length));
-            }
-            document.getElementById('newCode').value = result;
-        }
+		// Generate random discount code
+		function generateRandomCode() {
+			const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+			let result = '';
+			for (let i = 0; i < 8; i++) {
+				result += characters.charAt(Math.floor(Math.random() * characters.length));
+			}
+			document.getElementById('newCode').value = result;
+		}
 
-        // Add button for random code generation
-        document.addEventListener('DOMContentLoaded', function() {
-            const codeInput = document.getElementById('newCode');
-            const generateButton = document.createElement('button');
-            generateButton.type = 'button';
-            generateButton.className = 'btn btn-sm btn-outline-secondary mt-2';
-            generateButton.textContent = 'Tạo mã ngẫu nhiên';
-            generateButton.onclick = generateRandomCode;
-            codeInput.parentNode.appendChild(generateButton);
-        });
-    </script>
+		// Add button for random code generation
+		document.addEventListener('DOMContentLoaded', function() {
+			const codeInput = document.getElementById('newCode');
+			const generateButton = document.createElement('button');
+			generateButton.type = 'button';
+			generateButton.className = 'btn btn-sm btn-outline-secondary mt-2';
+			generateButton.textContent = 'Generate random code';
+			generateButton.onclick = generateRandomCode;
+			codeInput.parentNode.appendChild(generateButton);
+		});
+	</script>
 }

@@ -476,7 +476,7 @@
             </a>
 
             <div class="menu-heading">Orders</div>
-                <a asp-area="Admin" asp-controller="Order" asp-action="Index" class="menu-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Order" ? "active" : "")">
+                <a asp-area="Admin" asp-controller="Orders" asp-action="Index" class="menu-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Order" ? "active" : "")">
                 <i class="bi bi-cart3"></i> All Orders
             </a>
                     <a href="#" class="menu-item" style="display: none;">

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MyWebSite.Migrations
 {
     /// <inheritdoc />
-    public partial class InitDatabase : Migration
+    public partial class MyWebSite : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -294,8 +294,7 @@ namespace MyWebSite.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DiscountCodeId = table.Column<int>(type: "int", nullable: false),
-                    UsedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    DiscountCodeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
