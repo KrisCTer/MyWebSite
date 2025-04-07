@@ -50,9 +50,6 @@
                     </div>
                 </div>
 
-                <div class="card mb-4">
-                    <div class="card-header bg-white">
-                        <h5 class="mb-0">Payment Information</h5>
                     </div>
                     <div class="card-body">
                         <div class="form-check mb-3">
@@ -133,9 +130,7 @@
         
         <!-- Order Summary -->
         <div class="col-lg-4">
-            <div class="card mb-4 sticky-top" style="top: 80px">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Order Summary</h5>
+
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3">
@@ -177,55 +172,3 @@
 </div>
 
 @section Scripts {
-    <script>
-        $(document).ready(function() {
-            // Toggle payment method fields
-            $('input[name="paymentMethod"]').change(function() {
-                if ($(this).val() === 'creditCard') {
-                    $('#creditCardFields').show();
-                } else {
-                    $('#creditCardFields').hide();
-                }
-            });
-            
-            // Format credit card number with spaces
-            $('#cardNumber').on('input', function() {
-                $(this).val(function(_, val) {
-                    return val.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
-                });
-            });
-            
-            // Format expiry date with slash
-            $('#expiryDate').on('input', function() {
-                let value = $(this).val().replace(/\D/g, '');
-                if (value.length > 2) {
-                    value = value.substring(0, 2) + '/' + value.substring(2, 4);
-                }
-                $(this).val(value);
-            });
-            
-            // Apply coupon code
-     //       $('#applyCoupon').click(function() {
-       //         const couponCode = $('#couponCode').val().trim();
-         //       if (couponCode) {
-           //         // Call to backend to validate and apply coupon
-             //       $.ajax({
-               //         url: '/checkout/applycoupon',
-                 //       type: 'POST',
-                   //     data: { couponCode: couponCode },
-                     //   success: function(response) {
-                       //     if (response.success) {
-                         //       // Refresh the page to show updated prices
-                           //     location.reload();
-                           // } else {
-                            //    alert('Invalid coupon code');
-                           // }
-                       // }
-                   // });
-             //   }
-          //  }); 
-        });
-    </script>
-    
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

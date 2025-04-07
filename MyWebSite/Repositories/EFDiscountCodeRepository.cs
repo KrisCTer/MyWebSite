@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MyWebSite.Models;
 
 namespace MyWebSite.Repositories
@@ -35,6 +36,11 @@ namespace MyWebSite.Repositories
         public async Task<IEnumerable<DiscountCode>> GetAllAsync()
         {
             return await _context.discountCodes.ToListAsync();
+        }
+        public async Task<DiscountCode> GetByCodeAsync(string code)
+        {
+            return await _context.discountCodes
+                .FirstOrDefaultAsync(d => d.Code == code);
         }
 
         // Lấy mã giảm giá theo ID
@@ -97,6 +103,53 @@ namespace MyWebSite.Repositories
         {
             _context.discountCodes.Update(discountCode);
             await _context.SaveChangesAsync();
+        }
+        public async Task<IActionResult> ApplyVoucher(string code)
+        {
+            var isValidCode = await IsValidCode(code);
+            var isExpried = await IsCodeExpired(code);
+            var isUsedUp = await IsCodeUsedUp(code);
+            if (isExpried)
+            {
+                return new JsonResult(new { success = false, message = "The voucher code has expired." });
+            }
+
+            if (isUsedUp)
+            {
+                return new JsonResult(new { success = false, message = "The voucher code has been used up." });
+            }
+
+            if (!isValidCode)
+            {
+                return new JsonResult(new { success = false, message = "Invalid voucher code." });
+            }
+
+
+            // Nếu mã hợp lệ, lấy tỷ lệ giảm giá và trả về
+            // Nếu mã hợp lệ, lấy tỷ lệ giảm giá và trả về
+            var discountPercentage = await GetDiscountPercentage(code);
+            return new JsonResult(new { success = true, discountPercentage });
+        }
+        public async Task<int> GetDiscountPercentage(string code)
+        {
+            var discountCode = await _context.discountCodes
+                .Where(dc => dc.Code == code)
+                .FirstOrDefaultAsync();
+
+            if (discountCode == null)
+            {
+                Console.WriteLine($"No discount code found for {code}");
+                return 0;
+            }
+
+            Console.WriteLine($"Found discount code: {discountCode.Code}, DiscountPercentage: {discountCode.DiscountPercentage}");
+            return discountCode.DiscountPercentage;
+        }
+
+
+        Task IDiscountCodeRepositorycs.ApplyVoucher(string code)
+        {
+            return ApplyVoucher(code);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@using ModernHome
+﻿﻿@using ModernHome
 @model MyWebSite.Models.Product
 
 @{
@@ -114,8 +114,6 @@
                         <button class="btn btn-outline-secondary" type="button" id="increase-quantity">+</button>
                     </div>
                 </div>
-
-                
                 <div class="d-flex">
                     <a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-productId="@Model.ProductId" asp-route-quantity="@numQuantity">
                         <button class="btn btn-primary me-2" id="add-to-cart" data-id="@Model.ProductId">

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyWebSite.Models;
 using MyWebSite.Repositories;
@@ -18,76 +19,43 @@ namespace MyWebSite.Areas.Admin.Controllers
         // hien thi danh sach ma giam gia
         public async Task<IActionResult> Index()
         {
-            var discountCodes = await _discountCodeRepository.GetAllAsync();
-            return View(discountCodes);
+            var discounts = await _discountCodeRepository.GetAllAsync();
+            return View(discounts);
         }
-        // form code giam gia moi
-        public IActionResult Create()
-        {
-            return View();
-        }
-        // them ma giam gia
+
+        // POST: Admin/Discount/Create
         [HttpPost]
-        public async Task<IActionResult> Create(DiscountCode discountCode)
+        public async Task<IActionResult> Create(DiscountCode discount)
         {
-            discountCode.UsageCount = 0;
-            discountCode.Status = true;
-
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return View(discountCode);
+                discount.UsageCount = 0;
+                await _discountCodeRepository.AddAsync(discount);
+                return RedirectToAction(nameof(Index));
             }
-            if (discountCode.ValidFrom >= discountCode.ValidTo)
-            {
-                ModelState.AddModelError("ValidFrom", "Ngày bắt đầu phải nhỏ hơn ngày kết thúc");
-                return View(discountCode);
-            }
-
-            await _discountCodeRepository.AddAsync(discountCode);
             return RedirectToAction(nameof(Index));
         }
 
-        // xem chi tiet ma giam gia
-        public async Task<IActionResult> Details(int id)
-        {
-            var discountCode = await _discountCodeRepository.GetByIdAsync(id);
-            return discountCode == null ? NotFound() : View(discountCode);
-        }
-
-        // cap nhat ma giam gia
-        public async Task<IActionResult> Edit(int id)
-        {
-            var discountCode = await _discountCodeRepository.GetByIdAsync(id);
-            return discountCode == null ? NotFound() : View(discountCode);
-        }
+        // POST: Admin/Discount/Edit/5
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, DiscountCode discountCode)
+        public async Task<IActionResult> Edit(int id, DiscountCode discount)
         {
-            if (id != discountCode.Id)
+            if (id != discount.Id)
             {
                 return NotFound();
             }
-            if (!ModelState.IsValid)
+
+            if (ModelState.IsValid)
             {
-                return View(discountCode);
+                await _discountCodeRepository.UpdateAsync(discount);
+                return RedirectToAction(nameof(Index));
             }
-            if (discountCode.ValidFrom >= discountCode.ValidTo)
-            {
-                ModelState.AddModelError("ValidFrom", "Ngày bắt đầu phải nhỏ hơn ngày kết thúc");
-                return View(discountCode);
-            }
-            await _discountCodeRepository.UpdateAsync(discountCode);
             return RedirectToAction(nameof(Index));
         }
 
-        // xoa ma giam gia
+        // POST: Admin/Discount/Delete/5
+        [HttpPost]
         public async Task<IActionResult> Delete(int id)
-        {
-            var discountCode = await _discountCodeRepository.GetByIdAsync(id);
-            return discountCode == null ? NotFound() : View(discountCode);
-        }
-        [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _discountCodeRepository.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
