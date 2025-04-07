@@ -1,75 +1,170 @@
-﻿@model Order
+﻿@model Checkout
+@{
+    ViewData["Title"] = "Checkout";
+}
 
 <div class="container py-5">
-    <div class="row g-4">
+    <div class="row">
         <!-- Checkout Form -->
         <div class="col-lg-8">
-            <div class="p-4 shadow-sm" style="border-radius: 18px; background-color: #fff;">
-                <h2 class="mb-4" style="font-weight: 600;">Checkout Information</h2>
-                <form asp-action="Checkout" method="post">
-                    <!-- Shipping Address -->
-                    <div class="mb-4">
-                        <label asp-for="ShippingAddress" class="form-label" style="font-weight: 500;">Shipping Address <span class="text-danger">*</span></label>
-                        <input asp-for="ShippingAddress" class="form-control" style="border-radius: 12px;" required />
-                        <span asp-validation-for="ShippingAddress" class="text-danger"></span>
-                    </div>
+            <h1 class="mb-4">Checkout</h1>
 
-                    <!-- Notes -->
-                    <div class="mb-4">
-                        <label asp-for="Notes" class="form-label" style="font-weight: 500;">Order Notes</label>
-                        <textarea asp-for="Notes" class="form-control" rows="4" placeholder="Special instructions..." style="border-radius: 12px;"></textarea>
-                    </div>
+            <form asp-action="ProcessCheckout" method="post">
 
-                    <!-- Voucher Code -->
-                    <div class="mb-4">
-                        <label for="voucherCode" class="form-label" style="font-weight: 500;">Voucher Code</label>
-                        <div class="d-flex">
-                            <input type="text" id="voucherCodeInput" class="form-control" placeholder="Enter Voucher Code" style="border-radius: 12px;" />
-                            <button type="button" id="applyVoucherBtn" class="btn btn-secondary ms-2" style="border-radius: 12px;">Apply Voucher</button>
+                <div class="card mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Shipping Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="FullName" class="form-label">Full Name</label>
+                                <input asp-for="FullName" class="form-control" required>
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">Email Address</label>
+                            <input asp-for="Email" type="Email" class="form-control" required>
+                            <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
-                        <div id="voucherMessage" class="mt-2"></div>
-                        <!-- Hidden field to store the applied voucher code -->
-                        <input type="hidden" id="voucherCode" name="voucherCode" />
-                    </div>
 
-                    <!-- Submit Button -->
-                    <div class="text-end">
-                        <button type="submit" class="btn btn-primary" style="border-radius: 980px; padding: 12px 28px;">
-                            <i class="bi bi-bag-check-fill me-1"></i> Place Order
-                        </button>
+                        <div class="mb-3">
+                            <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
+                            <input asp-for="PhoneNumber" class="form-control" required>
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Address" class="form-label">Address</label>
+                            <input asp-for="Address" class="form-control" required>
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+
+                        
+                        
+                        <div class="mb-3">
+                            <label asp-for="Notes" class="form-label">Order Notes (Optional)</label>
+                            <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                        </div>
                     </div>
-                </form>
-            </div>
+                </div>
+
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="creditCard" value="creditCard" checked>
+                            <label class="form-check-label" for="creditCard">
+                                Credit Card
+                            </label>
+                        </div>
+                        
+                        <div id="creditCardFields">
+                            <div class="mb-3">
+                                <label for="cardNumber" class="form-label">Card Number</label>
+                                <input type="text" class="form-control" id="cardNumber" placeholder="XXXX XXXX XXXX XXXX" required>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="expiryDate" class="form-label">Expiry Date</label>
+                                    <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="cvv" class="form-label">CVV</label>
+                                    <input type="text" class="form-control" id="cvv" placeholder="XXX" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="nameOnCard" class="form-label">Name on Card</label>
+                                <input type="text" class="form-control" id="nameOnCard" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="paymentMethod" id="paypal" value="paypal">
+                            <label class="form-check-label" for="paypal">
+                                PayPal
+                            </label>
+                        </div>
+
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="cod">
+                                <label class="form-check-label" for="cod">
+                                    Cash On Delivery (COD)
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="momo" value="momo">
+                                <label class="form-check-label" for="momo">
+                                    Momo
+                                </label>
+                            </div>
+
+                            <!-- Add Momo payment button with link (hidden initially) -->
+                            <a href="/Payment/CreateOrder" class="btn btn-primary btn-sm" id="momoButton" style="display: none;">
+                                Momo
+                            </a>
+
+                            <script>
+                                // Show the Momo button when the Momo payment method is selected
+                                document.getElementById('momo').addEventListener('change', function() {
+                                    if (this.checked) {
+                                        // Show the Momo button when Momo is selected
+                                        document.getElementById('momoButton').style.display = 'inline-block';
+                                    }
+                                });
+                            </script>
+
+                        
+                    </div>
+                </div>
+                
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary" href="/ShoppingCart/OderCompleted">Complete Order</button>
+                </div>
+            </form>
         </div>
-
+        
         <!-- Order Summary -->
         <div class="col-lg-4">
-            <div class="p-4 shadow-sm" style="border-radius: 18px; background-color: #f5f5f7;">
-                <h3 class="mb-4" style="font-weight: 600;">Order Summary</h3>
-                <div class="mb-3">
-                    <ul class="list-group list-group-flush">
-                        @* @foreach (var item in Model.Items) *@
-                        @* { *@
-                        @*     <li class="list-group-item d-flex justify-content-between align-items-center"> *@
-                        @*         <span>@item.Name (x@item.Quantity)</span> *@
-                        @*         <strong>@((item.Price * item.Quantity).ToString("C"))</strong> *@
-                        @*     </li> *@
-                        @* } *@
-                    </ul>
-                </div>
 
-                <hr />
-                <div class="d-flex justify-content-between mb-2">
-                    <span class="text-muted">Subtotal:</span>
-                    <span class="fw-semibold" id="subtotalPrice">@Model.TotalPrice.ToString("C")</span>
                 </div>
-                <div class="d-flex justify-content-between mb-2">
-                    <span class="text-muted">Discount:</span>
-                    <span id="discountAmount" class="fw-semibold">$0.00</span>
-                </div>
-                <div class="d-flex justify-content-between">
-                    <span class="fw-bold">Total:</span>
-                    <span id="totalPrice" class="fw-bold">@Model.TotalPrice.ToString("C")</span>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Subtotal</span>
+                        <span>$@Model.Subtotal.ToString("0.00")</span>
+                    </div>
+                    
+                    @if (Model.Discount > 0)
+                    {
+                        <div class="d-flex justify-content-between mb-3 text-success">
+                            <span>Discount</span>
+                            <span>-$@Model.Discount.ToString("0.00")</span>
+                        </div>
+                    }
+                    
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Shipping</span>
+                        <span>$@Model.ShippingCost.ToString("0.00")</span>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Tax</span>
+                        <span>$@Model.Tax.ToString("0.00")</span>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between mb-3">
+                        <strong>Total</strong>
+                        <strong>$@Model.Total.ToString("0.00")</strong>
+                    </div>
+                    
+                   
+
                 </div>
             </div>
         </div>
@@ -77,52 +172,3 @@
 </div>
 
 @section Scripts {
-        $.ajax({
-        url: '@Url.Action("ApplyDiscountCode", "ShoppingCart")',
-        type: 'POST',
-        contentType: 'application/json',  // Quan trọng để server nhận dạng dữ liệu là JSON
-        data: JSON.stringify({ voucherCode: voucherCode }),  // Gửi voucherCode dưới dạng JSON
-        success: function (data) {
-            $('#applyVoucherBtn').prop('disabled', false).html('Apply Voucher');
-
-            if (data.success) {
-                var originalTotalPrice = @Model.TotalPrice;
-                var discountPercentage = data.discountPercentage;
-                var discountAmount = (originalTotalPrice * discountPercentage) / 100;
-                var newTotal = originalTotalPrice - discountAmount;
-
-                $('#discountAmount').text('-$' + discountAmount.toFixed(2));
-                $('#totalPrice').text('$' + newTotal.toFixed(2));
-
-                $('#voucherCode').val(voucherCode);
-                $('#voucherMessage').html('<span class="text-success">Voucher applied! ' + discountPercentage + '% discount</span>');
-            } else {
-                $('#voucherMessage').html('<span class="text-danger">' + (data.message || 'Invalid voucher code') + '</span>');
-                $('#discountAmount').text('$0.00');
-                $('#totalPrice').text('$' + originalTotalPrice.toFixed(2));
-            }
-        },
-        error: function () {
-            $('#applyVoucherBtn').prop('disabled', false).html('Apply Voucher');
-            $('#voucherMessage').html('<span class="text-danger">Error applying voucher code.</span>');
-        }
-    });
-    <style>
-        .spin {
-            animation: spin 1s linear infinite;
-        }
-
-        @@keyframes spin {
-            0%
-
-        {
-            transform: rotate(0deg);
-        }
-
-        100% {
-            transform: rotate(360deg);
-        }
-
-        }
-    </style>
-}

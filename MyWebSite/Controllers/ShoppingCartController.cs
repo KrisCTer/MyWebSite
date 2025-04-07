@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using MyWebSite.Extensions;
 using MyWebSite.Models;
 using MyWebSite.Repositories;
+using static MyWebSite.Controllers.CheckoutController;
 
 namespace MyWebSite.Controllers
 {
@@ -17,14 +16,11 @@ namespace MyWebSite.Controllers
         private readonly IProductRepository _productRepository;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IDiscountCodeRepositorycs _discountCodeRepository;
-
         public ShoppingCartController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IProductRepository productRepository, IDiscountCodeRepositorycs discountCodeRepositorycs)
         {
             _productRepository = productRepository;
             _context = context;
             _userManager = userManager;
-            _discountCodeRepository = discountCodeRepositorycs;
         }
 
         public async Task<IActionResult> AddToCart(Guid productId, int quantity)
@@ -87,7 +83,6 @@ namespace MyWebSite.Controllers
             // Kiểm tra và áp dụng mã giảm giá nếu có
             if (!string.IsNullOrEmpty(voucherCode))
             {
-                var discountPercentage = await _discountCodeRepository.GetDiscountPercentage(voucherCode);
                 if (discountPercentage > 0)
                 {
                     var discountAmount = subtotal * discountPercentage;
@@ -139,26 +134,3 @@ namespace MyWebSite.Controllers
                     await _context.SaveChangesAsync();
                 }
             }
-
-            return View("OrderCompleted", order.OrderId);
-        }
-        [HttpPost]
-        public async Task<IActionResult> ApplyDiscountCode([FromBody] VoucherCodeRequest request)
-        {
-            var isValidCode = await _discountCodeRepository.IsValidCode(request.VoucherCode);
-            if (!isValidCode)
-            {
-                return Json(new { success = false, message = "Invalid voucher code." });
-            }
-
-            var discountPercentage = await _discountCodeRepository.GetDiscountPercentage(request.VoucherCode);
-            return Json(new { success = true, discountPercentage });
-        }
-
-        // Định nghĩa lớp để nhận dữ liệu voucherCode từ FE
-        public class VoucherCodeRequest
-        {
-            public string VoucherCode { get; set; }
-        }
-    }
-}

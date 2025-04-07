@@ -28,7 +28,7 @@
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <img src="~/images/products/@(item.ProductId).jpg"
+                                                <img src="~/images/products/@(item.).jpg"
                                                      asp-append-version="true"
                                                      onerror="this.src='/images/jokedans.jpg'"
                                                      class="rounded me-3"
@@ -96,15 +96,8 @@
                             <p class="mb-0 fw-bold" id="total">@Model.Items.Sum(i => i.Price * i.Quantity).ToString("C")</p>
                         </div>
 
-                        <form asp-action="CheckOut" method="post">
-                            <div class="mb-3">
-                                <label class="form-label">Shipping Address</label>
-                                <textarea name="ShippingAddress" class="form-control" rows="3" required></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Notes</label>
-                                <textarea name="Notes" class="form-control" rows="2"></textarea>
-                            </div>
+                        <form asp-action="Checkout" method="post">
+                            
                             <button type="submit" class="btn btn-primary w-100">Proceed to Checkout</button>
                         </form>
                     </div>
@@ -140,9 +133,9 @@
             .then(data => {
                 if (data.success) {
                     // Calculate discount and update total
-                    var subtotal = @Model.Items.Sum(i => i.Price * i.Quantity);
+                  var beforeTotal = @Model.Items.Sum(i => i.Price * i.Quantity);
                     var discount = data.discountPercentage;
-                    var total = subtotal - (subtotal * discount);
+					var total = beforeTotal - (beforeTotal * (discount / 100));
 
                     // Update the total and subtotal
                     document.getElementById("total").innerText = total.toFixed(2);
