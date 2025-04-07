@@ -461,7 +461,7 @@ namespace MyWebSite.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("Payment");
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("MyWebSite.Models.Product", b =>

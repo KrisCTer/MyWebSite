@@ -27,46 +27,58 @@
         <div class="col-lg-10 mx-auto">
             <div class="dashboard-card">
                 <form asp-action="Create" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger text-center mb-3" role="alert"></div>
 
                     <div class="row g-4">
                         <!-- Account Information -->
                         <div class="col-md-6">
                             <h5 class="fw-bold mb-3">Account Information</h5>
 
-                            <div class="mb-3">
-                                <label asp-for="UserName" class="form-label">Username</label>
-                                <input asp-for="UserName" class="form-control" />
-                                <span asp-validation-for="UserName" class="text-danger"></span>
-                            </div>
-
-                            <div class="mb-3">
-                                <label asp-for="Email" class="form-label">Email Address</label>
-                                <input asp-for="Email" class="form-control" />
-                                <span asp-validation-for="Email" class="text-danger"></span>
-                            </div>
-
-                            <div class="mb-3">
-                                <label asp-for="Password" class="form-label">Password</label>
-                                <input asp-for="Password" type="password" class="form-control" />
-                                <span asp-validation-for="Password" class="text-danger"></span>
-                            </div>
-
-                            <div class="mb-3">
-                                <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
-                                <input asp-for="ConfirmPassword" type="password" class="form-control" />
-                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                            </div>
-
-                            <div class="mb-3">
-                                <label asp-for="FullName" class="form-label">Full Name</label>
-                                <input asp-for="FullName" class="form-control" />
+                            <!-- Full Name -->
+                            <div class="form-floating mb-3">
+                                <input asp-for="FullName" class="form-control" autocomplete="name" aria-required="true"
+                                       placeholder="Full Name" style="border-radius: 12px; background-color: #f5f5f7;" />
+                                <label asp-for="FullName">Full Name</label>
                                 <span asp-validation-for="FullName" class="text-danger"></span>
                             </div>
 
-                            <div class="mb-3">
-                                <label asp-for="Phone" class="form-label">Phone Number</label>
-                                <input asp-for="Phone" class="form-control" />
+                            <!-- Email -->
+                            <div class="form-floating mb-3">
+                                <input asp-for="Email" class="form-control" autocomplete="email" aria-required="true"
+                                       placeholder="name@example.com" style="border-radius: 12px; background-color: #f5f5f7;" />
+                                <label asp-for="Email">Email Address</label>
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            <!-- Username -->
+                            <div class="form-floating mb-3">
+                                <input asp-for="UserName" class="form-control" autocomplete="username" aria-required="true"
+                                       placeholder="Username" style="border-radius: 12px; background-color: #f5f5f7;" />
+                                <label asp-for="UserName">Username</label>
+                                <span asp-validation-for="UserName" class="text-danger"></span>
+                            </div>
+
+                            <!-- Password -->
+                            <div class="form-floating mb-3">
+                                <input asp-for="Password" type="password" class="form-control" autocomplete="new-password" aria-required="true"
+                                       placeholder="Password" style="border-radius: 12px; background-color: #f5f5f7;" />
+                                <label asp-for="Password">Password</label>
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+
+                            <!-- Confirm Password -->
+                            <div class="form-floating mb-3">
+                                <input asp-for="ConfirmPassword" type="password" class="form-control" autocomplete="new-password" aria-required="true"
+                                       placeholder="Confirm Password" style="border-radius: 12px; background-color: #f5f5f7;" />
+                                <label asp-for="ConfirmPassword">Confirm Password</label>
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="form-floating mb-3">
+                                <input asp-for="Phone" class="form-control" autocomplete="tel" placeholder="Phone Number"
+                                       style="border-radius: 12px; background-color: #f5f5f7;" />
+                                <label asp-for="Phone">Phone Number</label>
                                 <span asp-validation-for="Phone" class="text-danger"></span>
                             </div>
                         </div>
@@ -75,35 +87,53 @@
                         <div class="col-md-6">
                             <h5 class="fw-bold mb-3">Address Information</h5>
 
-                            <div class="mb-3">
-                                <label asp-for="Address" class="form-label">Address</label>
-                                <input asp-for="Address" class="form-control" />
+                            <!-- Address -->
+                            <div class="form-floating mb-3">
+                                <input asp-for="Address" class="form-control" autocomplete="street-address"
+                                       placeholder="Address" style="border-radius: 12px; background-color: #f5f5f7;" />
+                                <label asp-for="Address">Address</label>
                                 <span asp-validation-for="Address" class="text-danger"></span>
                             </div>
 
                             <div class="row mb-3">
+                                <!-- City -->
                                 <div class="col-md-6">
-                                    <label asp-for="City" class="form-label">City</label>
-                                    <input asp-for="City" class="form-control" />
-                                    <span asp-validation-for="City" class="text-danger"></span>
+                                    <div class="form-floating">
+                                        <input asp-for="City" class="form-control" autocomplete="address-level2"
+                                               placeholder="City" style="border-radius: 12px; background-color: #f5f5f7;" />
+                                        <label asp-for="City">City</label>
+                                        <span asp-validation-for="City" class="text-danger"></span>
+                                    </div>
                                 </div>
+                                <!-- State -->
                                 <div class="col-md-6">
-                                    <label asp-for="State" class="form-label">State/Province</label>
-                                    <input asp-for="State" class="form-control" />
-                                    <span asp-validation-for="State" class="text-danger"></span>
+                                    <div class="form-floating">
+                                        <input asp-for="State" class="form-control" autocomplete="address-level1"
+                                               placeholder="State/Province" style="border-radius: 12px; background-color: #f5f5f7;" />
+                                        <label asp-for="State">State/Province</label>
+                                        <span asp-validation-for="State" class="text-danger"></span>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="row mb-3">
+                                <!-- Zip Code -->
                                 <div class="col-md-6">
-                                    <label asp-for="ZipCode" class="form-label">Zip/Postal Code</label>
-                                    <input asp-for="ZipCode" class="form-control" />
-                                    <span asp-validation-for="ZipCode" class="text-danger"></span>
+                                    <div class="form-floating">
+                                        <input asp-for="ZipCode" class="form-control" autocomplete="postal-code"
+                                               placeholder="Zip/Postal Code" style="border-radius: 12px; background-color: #f5f5f7;" />
+                                        <label asp-for="ZipCode">Zip/Postal Code</label>
+                                        <span asp-validation-for="ZipCode" class="text-danger"></span>
+                                    </div>
                                 </div>
+                                <!-- Country -->
                                 <div class="col-md-6">
-                                    <label asp-for="Country" class="form-label">Country</label>
-                                    <input asp-for="Country" class="form-control" />
-                                    <span asp-validation-for="Country" class="text-danger"></span>
+                                    <div class="form-floating">
+                                        <input asp-for="Country" class="form-control" autocomplete="country"
+                                               placeholder="Country" style="border-radius: 12px; background-color: #f5f5f7;" />
+                                        <label asp-for="Country">Country</label>
+                                        <span asp-validation-for="Country" class="text-danger"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -113,19 +143,19 @@
                             <hr />
                             <h5 class="fw-bold mb-3">Role Management</h5>
 
-                            <div class="mb-3">
-                                <label class="form-label">Assign Roles</label>
-                                <div class="row row-cols-1 row-cols-md-3 g-3">
+                            <div class="mb-4">
+                                <label class="form-label mb-2">Assign Roles</label>
+                                <div class="row g-3">
                                     @foreach (var role in Model.AllRoles)
                                     {
-                                        <div class="col">
-                                            <div class="form-check">
+                                        <div class="col-md-4">
+                                            <div class="form-check" style="background-color: #f5f5f7; padding: 12px; border-radius: 12px;">
                                                 <input type="checkbox"
                                                        class="form-check-input"
                                                        name="SelectedRoles"
                                                        value="@role"
                                                        id="role-@role" />
-                                                <label class="form-check-label" for="role-@role">@role</label>
+                                                <label class="form-check-label fw-medium" for="role-@role">@role</label>
                                             </div>
                                         </div>
                                     }
@@ -137,8 +167,12 @@
                         <div class="col-12">
                             <hr />
                             <div class="d-flex justify-content-end gap-2">
-                                <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
-                                <button type="submit" class="btn btn-primary">Create User</button>
+                                <a asp-action="Index" class="btn btn-outline-secondary" style="border-radius: 12px; padding: 10px 20px;">
+                                    Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary" style="border-radius: 12px; padding: 10px 20px; background-color: #0071e3;">
+                                    <i class="bi bi-person-plus me-2"></i>Create User
+                                </button>
                             </div>
                         </div>
                     </div>

@@ -12,7 +12,7 @@ using MyWebSite.Models;
 namespace MyWebSite.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250406184645_InitDatabase")]
+    [Migration("20250407041118_InitDatabase")]
     partial class InitDatabase
     {
         /// <inheritdoc />
@@ -464,7 +464,7 @@ namespace MyWebSite.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("Payment");
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("MyWebSite.Models.Product", b =>
