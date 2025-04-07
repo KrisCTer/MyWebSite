@@ -49,6 +49,15 @@ namespace MyWebSite.Repositories
             return await _context.discountCodes.FindAsync(id);
         }
 
+        public Task<int> GetDiscountPercentage(string voucherCode)
+        {
+            var discountCode = _context.discountCodes
+                .FirstOrDefaultAsync(d => d.Code == voucherCode);
+            if (discountCode == null)
+                return Task.FromResult(0);
+            return Task.FromResult(discountCode.Result.DiscountPercentage);
+        }
+
         // Kiểm tra mã giảm giá đã hết hạn chưa
         public async Task<bool> IsCodeExpired(string code)
         {

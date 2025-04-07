@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyWebSite.Models;
 using MyWebSite.Repositories;
+using MyWebSite.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,11 @@ builder.Services.AddSession(options =>
 builder.Services.AddScoped<IProductRepository, EFProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, EFCategoryRepository>();
 builder.Services.AddScoped<IDiscountCodeRepositorycs, EFDiscountCodeRepository>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+
+// Register OrderService
+builder.Services.AddScoped<IOrderService, OrderService>();  // Thêm service Order vào đây
+
 // Configure Database Context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -72,7 +78,6 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllerRoute(
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}");
-
 });
 
 app.Run();
