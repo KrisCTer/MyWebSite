@@ -110,14 +110,14 @@
                     <h5 class="mb-0 me-3">Quantity</h5>
                     <div class="input-group" style="width: 130px;">
                         <button class="btn btn-outline-secondary" type="button" id="decrease-quantity">-</button>
-                        <input type="text" class="form-control text-center" id="product-quantity" value="1">
+                        <input type="text" class="form-control text-center" id="product-quantity" value="@numQuantity">
                         <button class="btn btn-outline-secondary" type="button" id="increase-quantity">+</button>
                     </div>
                 </div>
 
-                Operator '&&' cannot be applied to operands of type 'bool' and 'bool?'
+                
                 <div class="d-flex">
-                    <a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-productId="@Model.ProductId" asp-route-quantity="1">
+                    <a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-productId="@Model.ProductId" asp-route-quantity="@numQuantity">
                         <button class="btn btn-primary me-2" id="add-to-cart" data-id="@Model.ProductId">
                             <i class="bi bi-bag-plus me-2"></i>Add to Cart
                         </button>
@@ -367,16 +367,55 @@
 @section Scripts {
     <script>
         // Quantity controls
+               // Update the quantity controls
         document.getElementById('increase-quantity').addEventListener('click', function() {
             var input = document.getElementById('product-quantity');
             input.value = parseInt(input.value) + 1;
+            updateAddToCartLink();
         });
 
         document.getElementById('decrease-quantity').addEventListener('click', function() {
             var input = document.getElementById('product-quantity');
             if (parseInt(input.value) > 1) {
                 input.value = parseInt(input.value) - 1;
+                updateAddToCartLink();
             }
+        });
+
+        // Also update when manually typing a quantity
+        document.getElementById('product-quantity').addEventListener('change', function() {
+            updateAddToCartLink();
+        });
+
+        // Function to update the Add to Cart link with the current quantity
+        function updateAddToCartLink() {
+            var quantityInput = document.getElementById('product-quantity');
+            var quantity = parseInt(quantityInput.value);
+            var addToCartLink = document.querySelector('a[asp-controller="ShoppingCart"][asp-action="AddToCart"]');
+
+            // Extract the current URL
+            var currentUrl = addToCartLink.getAttribute('href');
+
+            // Update the quantity parameter in the URL
+            if (currentUrl.includes('quantity=')) {
+                // Replace existing quantity parameter
+                currentUrl = currentUrl.replace(/quantity=\d+/, 'quantity=' + quantity);
+            } else {
+                // Add quantity parameter if it doesn't exist
+                if (currentUrl.includes('?')) {
+                    currentUrl += '&quantity=' + quantity;
+                } else {
+                    currentUrl += '?quantity=' + quantity;
+                }
+            }
+
+            // Update the href attribute
+            addToCartLink.setAttribute('href', currentUrl);
+        }
+
+        // Initialize the link on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAddToCartLink();
         });
 
         // Add to cart

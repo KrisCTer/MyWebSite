@@ -12,5 +12,6 @@ namespace MyWebSite.Repositories
         Task<bool> IsValidCode(string code);
         Task<bool> IsCodeExpired(string code);
         Task<bool> IsCodeUsedUp(string code);
+        Task<int> GetDiscountPercentage(string voucherCode);
     }
 }
