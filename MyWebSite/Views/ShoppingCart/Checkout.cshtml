@@ -23,71 +23,74 @@
                                 <span asp-validation-for="FullName" class="text-danger"></span>
                             </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Email" class="form-label">Email Address</label>
-                            <input asp-for="Email" type="Email" class="form-control" required>
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
+                            <div class="mb-3">
+                                <label asp-for="Email" class="form-label">Email Address</label>
+                                <input asp-for="Email" type="Email" class="form-control" required>
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
 
-                        <div class="mb-3">
-                            <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
-                            <input asp-for="PhoneNumber" class="form-control" required>
-                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                        </div>
+                            <div class="mb-3">
+                                <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
+                                <input asp-for="PhoneNumber" class="form-control" required>
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Address" class="form-label">Address</label>
-                            <input asp-for="Address" class="form-control" required>
-                            <span asp-validation-for="Address" class="text-danger"></span>
-                        </div>
+                            <div class="mb-3">
+                                <label asp-for="Address" class="form-label">Address</label>
+                                <input asp-for="Address" class="form-control" required>
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
 
-                        
-                        
-                        <div class="mb-3">
-                            <label asp-for="Notes" class="form-label">Order Notes (Optional)</label>
-                            <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+
+
+                            <div class="mb-3">
+                                <label asp-for="Notes" class="form-label">Order Notes (Optional)</label>
+                                <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                    </div>
-                    <div class="card-body">
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="radio" name="paymentMethod" id="creditCard" value="creditCard" checked>
-                            <label class="form-check-label" for="creditCard">
-                                Credit Card
-                            </label>
+                    <div class="card mb-4">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">Payment Information</h5>
                         </div>
-                        
-                        <div id="creditCardFields">
-                            <div class="mb-3">
-                                <label for="cardNumber" class="form-label">Card Number</label>
-                                <input type="text" class="form-control" id="cardNumber" placeholder="XXXX XXXX XXXX XXXX" required>
+                        <div class="card-body">
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="creditCard" value="creditCard" checked>
+                                <label class="form-check-label" for="creditCard">
+                                    Credit Card
+                                </label>
                             </div>
-                            
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="expiryDate" class="form-label">Expiry Date</label>
-                                    <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY" required>
+
+                            <div id="creditCardFields">
+                                <div class="mb-3">
+                                    <label for="cardNumber" class="form-label">Card Number</label>
+                                    <input type="text" class="form-control" id="cardNumber" placeholder="XXXX XXXX XXXX XXXX" required>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="cvv" class="form-label">CVV</label>
-                                    <input type="text" class="form-control" id="cvv" placeholder="XXX" required>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="expiryDate" class="form-label">Expiry Date</label>
+                                        <input type="text" class="form-control" id="expiryDate" placeholder="MM/YY" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="cvv" class="form-label">CVV</label>
+                                        <input type="text" class="form-control" id="cvv" placeholder="XXX" required>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="nameOnCard" class="form-label">Name on Card</label>
+                                    <input type="text" class="form-control" id="nameOnCard" required>
                                 </div>
                             </div>
-                            
-                            <div class="mb-3">
-                                <label for="nameOnCard" class="form-label">Name on Card</label>
-                                <input type="text" class="form-control" id="nameOnCard" required>
+
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="paypal" value="paypal">
+                                <label class="form-check-label" for="paypal">
+                                    PayPal
+                                </label>
                             </div>
-                        </div>
-                        
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="radio" name="paymentMethod" id="paypal" value="paypal">
-                            <label class="form-check-label" for="paypal">
-                                PayPal
-                            </label>
-                        </div>
 
                             <div class="form-check mb-3">
                                 <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="cod">
@@ -118,26 +121,28 @@
                                 });
                             </script>
 
-                        
+
+                        </div>
                     </div>
-                </div>
-                
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary" href="/ShoppingCart/OderCompleted">Complete Order</button>
-                </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary" href="/ShoppingCart/OderCompleted">Complete Order</button>
+                    </div>
             </form>
         </div>
-        
+
         <!-- Order Summary -->
         <div class="col-lg-4">
-
+            <div class="card mb-4 sticky-top" style="top: 80px">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Order Summary</h5>
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3">
                         <span>Subtotal</span>
                         <span>$@Model.Subtotal.ToString("0.00")</span>
                     </div>
-                    
+
                     @if (Model.Discount > 0)
                     {
                         <div class="d-flex justify-content-between mb-3 text-success">
@@ -145,25 +150,25 @@
                             <span>-$@Model.Discount.ToString("0.00")</span>
                         </div>
                     }
-                    
+
                     <div class="d-flex justify-content-between mb-3">
                         <span>Shipping</span>
                         <span>$@Model.ShippingCost.ToString("0.00")</span>
                     </div>
-                    
+
                     <div class="d-flex justify-content-between mb-3">
                         <span>Tax</span>
                         <span>$@Model.Tax.ToString("0.00")</span>
                     </div>
-                    
+
                     <hr>
-                    
+
                     <div class="d-flex justify-content-between mb-3">
                         <strong>Total</strong>
                         <strong>$@Model.Total.ToString("0.00")</strong>
                     </div>
-                    
-                   
+
+
 
                 </div>
             </div>
@@ -172,3 +177,57 @@
 </div>
 
 @section Scripts {
+    <script>
+           $(document).ready(function() {
+               // Toggle payment method fields
+               $('input[name="paymentMethod"]').change(function() {
+                   if ($(this).val() === 'creditCard') {
+                       $('#creditCardFields').show();
+                   } else {
+                       $('#creditCardFields').hide();
+                   }
+               });
+
+               // Format credit card number with spaces
+               $('#cardNumber').on('input', function() {
+                   $(this).val(function(_, val) {
+                       return val.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
+                   });
+               });
+
+               // Format expiry date with slash
+               $('#expiryDate').on('input', function() {
+                   let value = $(this).val().replace(/\D/g, '');
+                   if (value.length > 2) {
+                       value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                   }
+                   $(this).val(value);
+               });
+
+               // Apply coupon code
+        //       $('#applyCoupon').click(function() {
+          //         const couponCode = $('#couponCode').val().trim();
+            //       if (couponCode) {
+              //         // Call to backend to validate and apply coupon
+                //       $.ajax({
+                  //         url: '/checkout/applycoupon',
+                    //       type: 'POST',
+                      //     data: { couponCode: couponCode },
+                        //   success: function(response) {
+                          //     if (response.success) {
+                            //       // Refresh the page to show updated prices
+                              //     location.reload();
+                              // } else {
+                               //    alert('Invalid coupon code');
+                              // }
+                          // }
+                      // });
+                //   }
+             //  });
+           });
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
