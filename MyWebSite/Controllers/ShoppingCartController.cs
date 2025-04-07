@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyWebSite.Extensions;
 using MyWebSite.Models;
@@ -16,15 +17,17 @@ namespace MyWebSite.Controllers
         private readonly IProductRepository _productRepository;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IDiscountCodeRepositorycs _discountCodeRepositorycs;
         public ShoppingCartController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IProductRepository productRepository, IDiscountCodeRepositorycs discountCodeRepositorycs)
         {
             _productRepository = productRepository;
             _context = context;
             _userManager = userManager;
+            _discountCodeRepositorycs = discountCodeRepositorycs;
         }
-
         public async Task<IActionResult> AddToCart(Guid productId, int quantity)
         {
+            // Già sứ bạn có phương thức lấy thông tin sản phẩm từ productId
             var product = await GetProductFromDatabase(productId);
 
             var cartItem = new CartItem
@@ -47,9 +50,10 @@ namespace MyWebSite.Controllers
             var cart = HttpContext.Session.GetObjectFromJson<ShoppingCart>("Cart") ?? new ShoppingCart();
             return View(cart);
         }
-
+        // Các actions khác...
         private async Task<Product> GetProductFromDatabase(Guid productId)
         {
+            // Truy vấn có số dữ liệu để lấy thông tin sản phẩm
             var product = await _productRepository.GetByIdAsync(productId);
             return product;
         }
@@ -60,11 +64,11 @@ namespace MyWebSite.Controllers
             if (cart is not null)
             {
                 cart.RemoveItem(productId);
+                // Lưu lại giỏ hàng vào Session sau khi đã xóa mục
                 HttpContext.Session.SetObjectAsJson("Cart", cart);
             }
             return RedirectToAction("Index");
         }
-
         public async Task<IActionResult> CheckOut(Order order, string voucherCode = null)
         {
             var cart = HttpContext.Session.GetObjectFromJson<ShoppingCart>("Cart");
@@ -83,6 +87,7 @@ namespace MyWebSite.Controllers
             // Kiểm tra và áp dụng mã giảm giá nếu có
             if (!string.IsNullOrEmpty(voucherCode))
             {
+                var discountPercentage = await _discountCodeRepositorycs.GetDiscountPercentage(voucherCode);
                 if (discountPercentage > 0)
                 {
                     var discountAmount = subtotal * discountPercentage;
@@ -134,3 +139,36 @@ namespace MyWebSite.Controllers
                     await _context.SaveChangesAsync();
                 }
             }
+            var checkoutModel = new Checkout
+            {
+                FullName = order.ApplicationUser.FullName,
+                Email = order.ApplicationUser.UserName,
+                PhoneNumber = order.ApplicationUser.PhoneNumber,
+                Address = order.ApplicationUser.Address,
+                Notes = order.Notes,
+                Subtotal = order.TotalPrice,
+
+                ShippingCost = 30000,
+
+                Total = order.TotalPrice + 30000,
+            };
+            return View("Checkout", checkoutModel);
+        }
+
+        public IActionResult OrderCompleted()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProcessCheckout(Checkout model, Order order)
+        {
+            return RedirectToAction("OrderCompleted");
+        }
+
+
+
+
+    }
+
+}

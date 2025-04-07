@@ -19,6 +19,7 @@ namespace MyWebSite.Models
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<LoyalCustomer> LoyalCustomers { get; set; }
         public DbSet<Activities> Activities { get; set; }
+        public DbSet<Payment> Payments { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

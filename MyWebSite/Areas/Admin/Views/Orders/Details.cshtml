@@ -1,0 +1,228 @@
+﻿@model MyWebSite.Models.Order
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Order Details";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="fw-bold mb-3">Order #@Model.OrderId</h2>
+                    <p class="text-muted">Order placed on @Model.OrderDate.ToString("MMM dd, yyyy HH:mm")</p>
+                </div>
+                <div>
+                    <a asp-action="Index" class="btn btn-outline-secondary me-2">
+                        <i class="bi bi-arrow-left me-1"></i> Back to Orders
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@Model.OrderId" class="btn btn-primary">
+                        <i class="bi bi-pencil me-1"></i> Edit Order
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Order Info -->
+        <div class="col-lg-4">
+            <div class="dashboard-card">
+                <div class="card-header mb-3">
+                    <h5 class="card-title">Order Information</h5>
+                </div>
+                <div class="mb-3">
+                    <p class="mb-1"><strong>Order ID:</strong> #@Model.OrderId</p>
+                    <p class="mb-1"><strong>Date:</strong> @Model.OrderDate.ToString("MMM dd, yyyy HH:mm")</p>
+                    <p class="mb-1">
+                        <strong>Status:</strong>
+                        @{
+                            string statusClass = Model.Status switch
+                            {
+                                "Delivered" => "status-completed",
+                                "Pending" => "status-pending",
+                                "Shipped" => "status-shipped",
+                                "Cancelled" => "status-cancelled",
+                                _ => "status-pending"
+                            };
+                        }
+                        <span class="status-badge @statusClass">@Model.Status</span>
+                    </p>
+                    <p class="mb-1"><strong>Total Amount:</strong> $@Model.TotalPrice.ToString("N2")</p>
+                    
+                    @if (Model.ShippedDate.HasValue)
+                    {
+                        <p class="mb-1"><strong>Shipped Date:</strong> @Model.ShippedDate.Value.ToString("MMM dd, yyyy")</p>
+                    }
+                    
+                    @if (Model.DeliveredDate.HasValue)
+                    {
+                        <p class="mb-1"><strong>Delivered Date:</strong> @Model.DeliveredDate.Value.ToString("MMM dd, yyyy")</p>
+                    }
+                </div>
+
+                <hr>
+
+                <div class="mb-3">
+                    <h6 class="fw-bold">Payment Details</h6>
+                    @if (Model.Payment != null)
+                    {
+                        @* <p class="mb-1"><strong>Payment Method:</strong> @Model.Payment.Status</p> *@
+                        <p class="mb-1"><strong>Transaction ID:</strong> @Model.Payment.Id</p>
+                        <p class="mb-1"><strong>Status:</strong> @Model.Payment.Status</p>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No payment information available</p>
+                    }
+                </div>
+                
+                <hr>
+                
+                <div class="mb-3">
+                    <h6 class="fw-bold">Notes</h6>
+                    @if (!string.IsNullOrEmpty(Model.Notes))
+                    {
+                        <p>@Model.Notes</p>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No notes available</p>
+                    }
+                </div>
+            </div>
+        </div>
+        
+        <!-- Customer Info -->
+        <div class="col-lg-4">
+            <div class="dashboard-card">
+                <div class="card-header mb-3">
+                    <h5 class="card-title">Customer Information</h5>
+                </div>
+                <div class="mb-3">
+                    <p class="mb-1"><strong>Customer:</strong> @Model.ApplicationUser.UserName</p>
+                    <p class="mb-1"><strong>Email:</strong> @Model.ApplicationUser.Email</p>
+                    <p class="mb-1"><strong>Phone:</strong> @(Model.ApplicationUser.PhoneNumber ?? "Not provided")</p>
+                </div>
+                
+                <hr>
+                
+                <div>
+                    <h6 class="fw-bold">Shipping Address</h6>
+                    @if (!string.IsNullOrEmpty(Model.ShippingAddress))
+                    {
+                        <p>@Model.ShippingAddress</p>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No shipping address provided</p>
+                    }
+                </div>
+            </div>
+        </div>
+        
+        <!-- Order Actions -->
+        <div class="col-lg-4">
+            <div class="dashboard-card">
+                <div class="card-header mb-3">
+                    <h5 class="card-title">Order Actions</h5>
+                </div>
+                
+                <form asp-action="UpdateStatus" method="post">
+                    <input type="hidden" name="orderId" value="@Model.OrderId" />
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Update Status</label>
+                        <select name="status" class="form-select">
+                            <option value="">All</option>
+                            <option value="Pending" selected="@(ViewBag.StatusFilter == "Pending")">Pending</option>
+                            <option value="Shipped" selected="@(ViewBag.StatusFilter == "Shipped")">Shipped</option>
+                            <option value="Delivered" selected="@(ViewBag.StatusFilter == "Delivered")">Delivered</option>
+                            <option value="Cancelled" selected="@(ViewBag.StatusFilter == "Cancelled")">Cancelled</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Add Note</label>
+                        <textarea name="note" class="form-control" rows="3"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100">Update Order</button>
+                </form>
+                
+                <hr>
+                
+                <div class="d-grid gap-2">
+                    <a asp-action="PrintInvoice" asp-route-id="@Model.OrderId" class="btn btn-outline-primary">
+                        <i class="bi bi-printer me-1"></i> Print Invoice
+                    </a>
+                    <a asp-action="SendNotification" asp-route-id="@Model.OrderId" class="btn btn-outline-secondary">
+                        <i class="bi bi-envelope me-1"></i> Send Notification
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Order Items -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="dashboard-card">
+                <div class="card-header mb-3">
+                    <h5 class="card-title">Order Items</h5>
+                </div>
+                <div class="table-responsive admin-table">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Discount</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.OrderDetails)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="product-thumbnail me-2">
+                                                <!-- If you have product images -->
+                                                <!-- <img src="@item.Product.ImageUrl" alt="@item.Product.Name" width="50"> -->
+                                            </div>
+                                            <div>
+                                                <p class="mb-0 fw-medium">@item.Product.Name</p>
+                                                <small class="text-muted">SKU: @item.Product.ProductId</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>$@item.Price.ToString("N2")</td>
+                                    <td>@item.Quantity</td>
+                                    <td>$@item.Discount.ToString("N2")</td>
+                                    <td>$@((item.Price * item.Quantity - item.Discount).ToString("N2"))</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4" class="text-end"><strong>Subtotal:</strong></td>
+                                <td>$@(Model.OrderDetails.Sum(x => x.Price * x.Quantity).ToString("N2"))</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="text-end"><strong>Discount:</strong></td>
+                                <td>$@(Model.OrderDetails.Sum(x => x.Discount).ToString("N2"))</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                                <td>$@Model.TotalPrice.ToString("N2")</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

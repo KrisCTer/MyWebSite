@@ -315,7 +315,7 @@ namespace MyWebSite.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Payment",
+                name: "Payments",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -327,9 +327,9 @@ namespace MyWebSite.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Payment", x => x.Id);
+                    table.PrimaryKey("PK_Payments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Payment_Orders_OrderId",
+                        name: "FK_Payments_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
                         principalColumn: "OrderId",
@@ -495,8 +495,8 @@ namespace MyWebSite.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Payment_OrderId",
-                table: "Payment",
+                name: "IX_Payments_OrderId",
+                table: "Payments",
                 column: "OrderId",
                 unique: true);
 
@@ -554,7 +554,7 @@ namespace MyWebSite.Migrations
                 name: "OrderDetails");
 
             migrationBuilder.DropTable(
-                name: "Payment");
+                name: "Payments");
 
             migrationBuilder.DropTable(
                 name: "ProductDetail");

@@ -2,64 +2,20 @@
     ViewData["Title"] = "Home";
     ViewData["ShowBanner"] = true;
 }
+
 <!-- Hero Banner with Animation -->
 <section class="hero-banner">
     <div class="container">
         <h1>Elevate Your Living Space</h1>
         <p>Timeless furniture for modern living.</p>
-        <a asp-controller="Products" asp-action="Index" class="btn btn-primary">Shop Collections</a>
-        <a asp-controller="Home" asp-action="Services" class="btn btn-outline ms-2">Design Services</a>
+        <a asp-controller="Shop" asp-action="Index" class="btn btn-primary">Shop Collections</a>
+        
         <div>
-            <img src="/api/placeholder/1200/600" alt="Modern Living Room" class="product-image">
+            <img src="~/images/living room.jpg" alt="Modern Living Room" class="product-image">
         </div>
     </div>
 </section>
 
-<!-- Featured Collections -->
-<section class="collection-section">
-    <div class="container">
-        <div class="collection-heading">
-            <h2>Latest Collections</h2>
-            <p>Discover our newest furniture designs crafted with sustainable materials and timeless aesthetics.</p>
-        </div>
-
-        <div class="row">
-            <!-- Collection 1 -->
-            <div class="col-md-4">
-                <div class="product-card" data-animation-delay="0">
-                    <img src="/api/placeholder/400/300" alt="Scandinavian Collection" class="img-fluid">
-                    <div class="product-info">
-                        <h3 class="product-title">Scandinavian Collection</h3>
-                        <p class="text-muted">Minimalist design with natural materials</p>
-                        <a asp-controller="Products" asp-action="Collection" asp-route-id="scandinavian" class="btn btn-outline mt-3">View Collection</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Collection 2 -->
-            <div class="col-md-4">
-                <div class="product-card" data-animation-delay="150">
-                    <img src="/api/placeholder/400/300" alt="Mid-Century Modern" class="img-fluid">
-                    <div class="product-info">
-                        <h3 class="product-title">Mid-Century Modern</h3>
-                        <p class="text-muted">Iconic designs inspired by the 1950s</p>
-                        <a asp-controller="Products" asp-action="Collection" asp-route-id="mid-century" class="btn btn-outline mt-3">View Collection</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Collection 3 -->
-            <div class="col-md-4">
-                <div class="product-card" data-animation-delay="300">
-                    <img src="/api/placeholder/400/300" alt="Contemporary Luxe" class="img-fluid">
-                    <div class="product-info">
-                        <h3 class="product-title">Contemporary Luxe</h3>
-                        <p class="text-muted">Sophisticated pieces for modern homes</p>
-                        <a asp-controller="Products" asp-action="Collection" asp-route-id="contemporary" class="btn btn-outline mt-3">View Collection</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <!-- Featured Products -->
 <section class="product-grid">
@@ -73,7 +29,7 @@
             <!-- Product 1 -->
             <div class="col-md-3 col-sm-6">
                 <div class="product-card" data-animation-delay="0">
-                    <img src="/api/placeholder/400/300" alt="Lounge Chair" class="img-fluid">
+                    <img src="~/images//Oslo Lounge Chair.webp" alt="Lounge Chair" class="img-fluid">
                     <div class="product-info">
                         <h3 class="product-title">Oslo Lounge Chair</h3>
                         <p class="text-muted">Solid oak with fabric upholstery</p>
@@ -87,7 +43,7 @@
             <!-- Product 2 -->
             <div class="col-md-3 col-sm-6">
                 <div class="product-card" data-animation-delay="150">
-                    <img src="/api/placeholder/400/300" alt="Coffee Table" class="img-fluid">
+                    <img src="~/images/Marina Coffee Table.jpg" alt="Coffee Table" class="img-fluid">
                     <div class="product-info">
                         <h3 class="product-title">Marina Coffee Table</h3>
                         <p class="text-muted">Walnut with tempered glass</p>
@@ -101,7 +57,7 @@
             <!-- Product 3 -->
             <div class="col-md-3 col-sm-6">
                 <div class="product-card" data-animation-delay="300">
-                    <img src="/api/placeholder/400/300" alt="Dining Chair" class="img-fluid">
+                    <img src="~/images/Lucia Dining Chair.jpg" alt="Dining Chair" class="img-fluid">
                     <div class="product-info">
                         <h3 class="product-title">Lucia Dining Chair</h3>
                         <p class="text-muted">Set of 2, oak and velvet</p>
@@ -115,7 +71,7 @@
             <!-- Product 4 -->
             <div class="col-md-3 col-sm-6">
                 <div class="product-card" data-animation-delay="450">
-                    <img src="/api/placeholder/400/300" alt="Floor Lamp" class="img-fluid">
+                    <img src="~/images/Atlas Floor Lamp.jpg" alt="Floor Lamp" class="img-fluid">
                     <div class="product-info">
                         <h3 class="product-title">Atlas Floor Lamp</h3>
                         <p class="text-muted">Brass with marble base</p>
@@ -143,7 +99,7 @@
             <div class="col-md-4">
                 <a asp-controller="Products" asp-action="Category" asp-route-id="living-room" class="text-decoration-none">
                     <div class="category-card">
-                        <img src="/api/placeholder/400/300" alt="Living Room">
+                        <img src="~/images//living room_2.jpg" alt="Living Room">
                         <div class="category-overlay">
                             <h3>Living Room</h3>
                         </div>
@@ -154,7 +110,7 @@
             <div class="col-md-4">
                 <a asp-controller="Products" asp-action="Category" asp-route-id="bedroom" class="text-decoration-none">
                     <div class="category-card">
-                        <img src="/api/placeholder/400/300" alt="Bedroom">
+                        <img src="~/images/bedroom.jpg" alt="Bedroom">
                         <div class="category-overlay">
                             <h3>Bedroom</h3>
                         </div>
@@ -165,7 +121,7 @@
             <div class="col-md-4">
                 <a asp-controller="Products" asp-action="Category" asp-route-id="dining" class="text-decoration-none">
                     <div class="category-card">
-                        <img src="/api/placeholder/400/300" alt="Dining Room">
+                        <img src="~/images/dining.jpg" alt="Dining Room">
                         <div class="category-overlay">
                             <h3>Dining Room</h3>
                         </div>
@@ -176,7 +132,7 @@
             <div class="col-md-4">
                 <a asp-controller="Products" asp-action="Category" asp-route-id="office" class="text-decoration-none">
                     <div class="category-card">
-                        <img src="/api/placeholder/400/300" alt="Home Office">
+                        <img src="~/images/home office.jpg" alt="Home Office">
                         <div class="category-overlay">
                             <h3>Home Office</h3>
                         </div>
@@ -187,7 +143,7 @@
             <div class="col-md-4">
                 <a asp-controller="Products" asp-action="Category" asp-route-id="outdoor" class="text-decoration-none">
                     <div class="category-card">
-                        <img src="/api/placeholder/400/300" alt="Outdoor">
+                        <img src="~/images//ourdoor.jpg" alt="Outdoor">
                         <div class="category-overlay">
                             <h3>Outdoor</h3>
                         </div>
@@ -198,7 +154,7 @@
             <div class="col-md-4">
                 <a asp-controller="Products" asp-action="Category" asp-route-id="accessories" class="text-decoration-none">
                     <div class="category-card">
-                        <img src="/api/placeholder/400/300" alt="Accessories">
+                        <img src="~/images/Accessories.jpg" alt="Accessories">
                         <div class="category-overlay">
                             <h3>Accessories</h3>
                         </div>
